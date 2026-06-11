@@ -380,6 +380,7 @@
 
       if (myRole === 'p1') {
         show('s-waiting');
+        listenForRestart();
         // P2 입장 대기
         onValue(roomRef, (snap) => {
           const d = snap.val();
@@ -388,6 +389,7 @@
           }
         }, { onlyOnce: false });
       } else {
+        listenForRestart();
         // P2는 바로 게임 시작 대기 (P1 결과 기다림)
         startP2Listener();
       }
@@ -497,9 +499,21 @@
     // ── 재시작 ──
     window.restart = async function() {
       playTap();
-      if (roomRef) await remove(roomRef);
-      setTimeout(() => location.reload(), 300);
+      try {
+        if (roomRef) await update(roomRef, { state: 'restart' });
+      } catch(e) {}
     };
+
+    // ── 재시작 감지 리스너 ──
+    function listenForRestart() {
+      onValue(roomRef, (snap) => {
+        const d = snap.val();
+        if (d && d.state === 'restart') {
+          remove(roomRef).catch(() => {});
+          setTimeout(() => location.reload(), 300);
+        }
+      });
+    }
 
     // ── 판정 ──
     function judge(t) {
