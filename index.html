@@ -41,13 +41,11 @@
 <body class="flex items-center justify-center min-h-screen relative p-4 py-16 select-none">
   <div class="ga"></div><div class="gb"></div>
 
-  <!-- 로딩 -->
   <div class="scr on flex-col items-center justify-center w-full max-w-md z-10" id="s-load">
     <div class="text-4xl mb-4 wp">🎙️</div>
     <p class="text-sm font-bold text-slate-400 tracking-widest">연결 중...</p>
   </div>
 
-  <!-- 로비 -->
   <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-lobby">
     <div class="mb-6 text-center">
       <h1 class="vt text-4xl sm:text-5xl text-[#2ac1bc]">THE FIRST VICTIM</h1>
@@ -69,7 +67,6 @@
     </button>
   </div>
 
-  <!-- 대기 -->
   <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-wait">
     <div class="text-6xl mb-6 wp">⏳</div>
     <h2 class="text-2xl font-black mb-2 text-center">상대방을 기다리는 중...</h2>
@@ -81,7 +78,6 @@
     <p class="text-xs text-slate-500" id="d-role"></p>
   </div>
 
-  <!-- P1 플레이 -->
   <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-p1">
     <div class="inline-flex items-center gap-2 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-full px-5 py-1.5 text-xs font-bold tracking-[2.5px] text-[#2ac1bc] mb-4">
       <span class="w-2.5 h-2.5 rounded-full bg-[#2ac1bc] animate-pulse"></span>PLAYER 1
@@ -110,7 +106,6 @@
     <div class="text-6xl font-black text-slate-600 select-none text-center" id="tm1">0.000</div>
   </div>
 
-  <!-- P1 대기 -->
   <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-p1w">
     <div class="text-7xl mb-4 animate-bounce" id="re1">🎯</div>
     <p class="text-sm font-bold text-[#2ac1bc] mb-1">내 기록</p>
@@ -121,7 +116,6 @@
     </div>
   </div>
 
-  <!-- P2 플레이 -->
   <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-p2">
     <div class="inline-flex items-center gap-2 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-full px-5 py-1.5 text-xs font-bold tracking-[2.5px] text-[#2ac1bc] mb-3">
       <span class="w-2.5 h-2.5 rounded-full bg-[#2ac1bc] animate-pulse"></span>PLAYER 2
@@ -153,7 +147,6 @@
     <div class="text-6xl font-black text-slate-600 select-none text-center" id="tm2">0.000</div>
   </div>
 
-  <!-- 최종 결과 -->
   <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-final">
     <div class="inline-block bg-[#2ac1bc] text-black font-extrabold text-[10px] px-4 py-1 rounded-full uppercase tracking-[2px] mb-6">🏆 최종 결과</div>
     <div class="grid grid-cols-5 gap-3 w-full max-w-md mb-8 items-center">
@@ -185,7 +178,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getDatabase, ref, runTransaction, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     const db = getDatabase(initializeApp({
       apiKey:"AIzaSyArJEoLmzxRTwfrVOnq0VU_sawqAucalGc",
@@ -198,78 +191,82 @@
     }));
 
     const TARGET=3, MAX=6;
-
-    // URL에서 방 코드 읽기 (모듈 최상단에서 한 번만)
     const urlRoom = new URLSearchParams(window.location.search).get('room');
-
-    // 현재 게임 상태
-    let role=null, currentRoomCode=null, rref=null, p1t=null, p2t=null;
-    let p2PlayListenerActive = false;
+    let role=null, rref=null, p1t=null, p2t=null, finalShown=false;
 
     function show(id) {
       document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
       setTimeout(()=>{ const e=document.getElementById(id); if(e) e.classList.add('on'); },50);
     }
 
-    // ── 방 입장 (roomCode를 직접 받음) ──
-    async function enterRoom(roomCode) {
-      currentRoomCode = roomCode;
-      rref = ref(db, 'rooms/' + roomCode);
-      p1t = null; p2t = null; role = null;
-      p2PlayListenerActive = false;
+    async function enterRoom(code) {
+      rref = ref(db, 'rooms/' + code);
 
-      const snap = await get(rref);
-      const data = snap.val();
+      // transaction으로 P1/P2 역할 원자적 결정
+      let myRole = null;
+      try {
+        const result = await runTransaction(rref, (current) => {
+          if (current === null) {
+            // 방 없음 → P1으로 생성
+            return { state:'waiting', p1t:null, p2t:null };
+          } else if (current.state === 'waiting') {
+            // 대기 중 → P2로 입장
+            return { ...current, state:'playing' };
+          } else {
+            // 진행 중인 방 → 중단
+            return undefined; // abort transaction
+          }
+        });
 
-      if (!data || data.state === 'done' || data.state === 'restart') {
-        // 방이 없거나 끝난 방 → P1으로 새로 생성
-        role = 'p1';
-        await set(rref, {state:'waiting', p1t:null, p2t:null, ts: Date.now()});
-      } else if (data.state === 'waiting') {
-        // 대기 중인 방 → P2로 입장
-        role = 'p2';
-        await update(rref, {state:'playing'});
-      } else {
-        alert('이미 진행 중인 방이에요. 잠시 후 다시 시도해주세요!');
+        if (!result.committed) {
+          alert('이미 진행 중인 방이에요. 잠시 후 다시 시도해주세요!');
+          show('s-lobby');
+          return;
+        }
+
+        // transaction 후 실제 데이터로 역할 판단
+        const val = result.snapshot.val();
+        myRole = (val && val.state === 'waiting') ? 'p1' : 'p2';
+        role = myRole;
+
+      } catch(e) {
+        alert('연결 오류가 발생했어요. 다시 시도해주세요.');
         show('s-lobby');
         return;
       }
 
-      document.getElementById('d-room').textContent = roomCode;
+      document.getElementById('d-room').textContent = code;
       document.getElementById('d-role').textContent = '나는 ' + (role==='p1' ? 'Player 1' : 'Player 2');
       show('s-wait');
 
-      // 메인 리스너
+      // 메인 상태 리스너
       onValue(rref, snap => {
         const d = snap.val();
         if (!d) return;
 
-        // 재시작 신호 감지
+        // 재시작 신호
         if (d.state === 'restart' && d.nextRoom) {
-          const newUrl = window.location.pathname + '?room=' + d.nextRoom;
-          window.location.replace(newUrl);
+          window.location.replace(window.location.pathname + '?room=' + d.nextRoom);
           return;
         }
 
         if (role === 'p1') {
           if (d.state === 'playing') startP1();
+          if (d.state === 'done' && d.p2t != null && !finalShown) {
+            finalShown = true;
+            p2t = d.p2t;
+            renderFinal(p1t, p2t);
+          }
         } else {
-          // P2: p2_turn 되면 플레이
-          if (d.state === 'p2_turn' && d.p1t != null && !p2PlayListenerActive) {
-            p2PlayListenerActive = true;
+          if (d.state === 'p2_turn' && d.p1t != null && p2t === null) {
             p1t = d.p1t;
             document.getElementById('p1ref').textContent = p1t.toFixed(3)+'초';
             show('s-p2');
             initHold('hb2','wf2','pf2','tm2', async t => {
               p2t = t;
               await update(rref, {p2t:t, state:'done'});
-              renderFinal(p1t, t);
+              if (!finalShown) { finalShown=true; renderFinal(p1t, t); }
             });
-          }
-          // P2: done 상태면 결과 표시 (이미 표시 안 된 경우)
-          if (d.state === 'done' && d.p1t != null && d.p2t != null && p2t === null) {
-            p1t = d.p1t; p2t = d.p2t;
-            renderFinal(p1t, p2t);
           }
         }
       });
@@ -278,10 +275,12 @@
     window.joinRoom = async function() {
       const code = document.getElementById('ri').value.trim().toUpperCase();
       if (code.length < 2) { alert('방 코드를 입력해주세요!'); return; }
+      show('s-load');
       await enterRoom(code);
     };
 
     function startP1() {
+      if (p1t !== null) return; // 이미 플레이함
       show('s-p1');
       initHold('hb1','wf1','pf1','tm1', async t => {
         p1t = t;
@@ -290,32 +289,24 @@
         document.getElementById('rt1').textContent = t.toFixed(3)+'초';
         await update(rref, {p1t:t, state:'p2_turn'});
         show('s-p1w');
-        // P2 결과 대기
-        onValue(rref, snap => {
-          const d = snap.val();
-          if (d && d.state === 'done' && d.p2t != null && p2t === null) {
-            p2t = d.p2t;
-            renderFinal(p1t, p2t);
-          }
-        });
       });
     }
 
     function renderFinal(t1, t2) {
       const d1=Math.abs(t1-TARGET), d2=Math.abs(t2-TARGET), tied=d1.toFixed(3)===d2.toFixed(3);
-      document.getElementById('ft1').textContent = t1.toFixed(3)+'s';
-      document.getElementById('ft2').textContent = t2.toFixed(3)+'s';
-      document.getElementById('fd1').textContent = '오차: ±'+d1.toFixed(3)+'s';
-      document.getElementById('fd2').textContent = '오차: ±'+d2.toFixed(3)+'s';
-      const c1=document.getElementById('fc1'), c2=document.getElementById('fc2');
-      const cr1=document.getElementById('crn1'), cr2=document.getElementById('crn2');
+      document.getElementById('ft1').textContent=t1.toFixed(3)+'s';
+      document.getElementById('ft2').textContent=t2.toFixed(3)+'s';
+      document.getElementById('fd1').textContent='오차: ±'+d1.toFixed(3)+'s';
+      document.getElementById('fd2').textContent='오차: ±'+d2.toFixed(3)+'s';
+      const c1=document.getElementById('fc1'),c2=document.getElementById('fc2');
+      const cr1=document.getElementById('crn1'),cr2=document.getElementById('crn2');
       c1.className='rc col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between';
       c2.className='rc col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between';
       cr1.innerHTML=''; cr2.innerHTML='';
       if (tied) {
         document.getElementById('fw').textContent='🤝 기적적인 동률!';
         document.getElementById('fs').textContent='소수점 3자리까지 똑같다니, 두 분 다 공동 낙점!';
-      } else if (d1 < d2) {
+      } else if (d1<d2) {
         c2.className+=' win'; cr2.innerHTML='<span class="bdg bf">🎙️ 첫 주자</span>'; cr1.innerHTML='<span class="bdg bs">🎉 SAFE</span>';
         document.getElementById('fw').textContent='첫 마이크 주인공 낙점!';
         document.getElementById('fs').textContent='오늘 세션의 첫 마이크는 Player 2가 가져갑니다! 🎙️';
@@ -327,39 +318,26 @@
       playWin(); show('s-final');
     }
 
-    // ── 다시 하기: 새 방 코드 생성 후 양쪽 리디렉트 ──
     window.doRestart = async function() {
       tap();
-      // 기본 방 코드에서 숫자 접미사 제거 후 새 랜덤 숫자 붙이기
-      const base = (urlRoom || currentRoomCode || 'GAME').replace(/_[0-9]+$/, '');
-      const newRoom = base + '_' + Math.floor(1000 + Math.random() * 9000);
-      if (rref) {
-        try { await update(rref, {state:'restart', nextRoom: newRoom}); } catch(e) {}
-      }
-      // 내 쪽도 이동
+      const base = (urlRoom || 'GAME').replace(/_[0-9]+$/, '');
+      const newRoom = base + '_' + Math.floor(1000 + Math.random()*9000);
+      if (rref) try { await update(rref, {state:'restart', nextRoom:newRoom}); } catch(e) {}
       window.location.replace(window.location.pathname + '?room=' + newRoom);
     };
 
-    function judge(t) {
-      const d=Math.abs(t-TARGET);
-      if(d<=.05) return {e:'🎯',sfx:'win'};
-      if(d<=.2) return {e:'✨',sfx:'win'};
-      if(d<=.5) return {e:'👍',sfx:null};
-      if(t<TARGET) return t<2?{e:'🔮',sfx:'mys'}:{e:'⚡',sfx:null};
-      return t>4.2?{e:'☕',sfx:'pce'}:{e:'🧘',sfx:null};
-    }
-
-    let _ctx=null,_to=null,_tg=null;
-    function ac(){if(!_ctx)try{_ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}if(_ctx&&_ctx.state==='suspended')_ctx.resume();return _ctx;}
+    function judge(t){const d=Math.abs(t-TARGET);if(d<=.05)return{e:'🎯',sfx:'win'};if(d<=.2)return{e:'✨',sfx:'win'};if(d<=.5)return{e:'👍',sfx:null};if(t<TARGET)return t<2?{e:'🔮',sfx:'mys'}:{e:'⚡',sfx:null};return t>4.2?{e:'☕',sfx:'pce'}:{e:'🧘',sfx:null};}
+    let _c=null,_to=null,_tg=null;
+    function ac(){if(!_c)try{_c=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}if(_c&&_c.state==='suspended')_c.resume();return _c;}
     function tap(){const c=ac();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=580;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(.08,c.currentTime+.015);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.12);o.start(c.currentTime);o.stop(c.currentTime+.12);}
     function startT(){const c=ac();if(!c)return;try{_to=c.createOscillator();_tg=c.createGain();_to.connect(_tg);_tg.connect(c.destination);_to.type='triangle';_to.frequency.setValueAtTime(180,c.currentTime);_to.frequency.linearRampToValueAtTime(600,c.currentTime+3);_to.frequency.linearRampToValueAtTime(1000,c.currentTime+6);_tg.gain.setValueAtTime(0,c.currentTime);_tg.gain.linearRampToValueAtTime(.05,c.currentTime+.1);_to.start(c.currentTime);}catch(e){}}
-    function stopT(){if(_to){try{_tg.gain.cancelScheduledValues(_ctx.currentTime);_tg.gain.setValueAtTime(_tg.gain.value,_ctx.currentTime);_tg.gain.exponentialRampToValueAtTime(.001,_ctx.currentTime+.05);_to.stop(_ctx.currentTime+.06);}catch(e){}_to=null;_tg=null;}}
+    function stopT(){if(_to){try{_tg.gain.cancelScheduledValues(_c.currentTime);_tg.gain.setValueAtTime(_tg.gain.value,_c.currentTime);_tg.gain.exponentialRampToValueAtTime(.001,_c.currentTime+.05);_to.stop(_c.currentTime+.06);}catch(e){}_to=null;_tg=null;}}
     function triggerSfx(s){if(s==='win')playWin();if(s==='mys')playMys();if(s==='pce')playPce();}
     function playWin(){const c=ac();if(!c)return;[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const t=c.currentTime+i*.08;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.1,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.4);o.start(t);o.stop(t+.4);});}
     function playMys(){const c=ac();if(!c)return;[261.6,311.1,370,466.2,554.4,622.3,740].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const t=c.currentTime+i*.11;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.05);g.gain.exponentialRampToValueAtTime(.001,t+.45);o.start(t);o.stop(t+.45);});}
     function playPce(){const c=ac();if(!c)return;[261.6,329.6,392,523.3].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const d=i*.15;g.gain.setValueAtTime(0,c.currentTime+d);g.gain.linearRampToValueAtTime(.1,c.currentTime+d+.2);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d+2);o.start(c.currentTime+d);o.stop(c.currentTime+d+2);});}
 
-    function initHold(bid,wid,pid,tid,done) {
+    function initHold(bid,wid,pid,tid,done){
       const btn=document.getElementById(bid),wf=document.getElementById(wid),pf=document.getElementById(pid),tm=document.getElementById(tid);
       btn.classList.remove('on');wf.classList.remove('play');pf.style.width='0%';tm.textContent='0.000';tm.className='text-6xl font-black text-slate-600 select-none text-center';
       const bars=wf.querySelectorAll('.sb');
@@ -372,10 +350,9 @@
 
     document.addEventListener('contextmenu',e=>e.preventDefault());
 
-    // ── 초기 진입 ──
     if (urlRoom) {
       show('s-load');
-      setTimeout(() => enterRoom(urlRoom.toUpperCase()), 400);
+      setTimeout(()=>enterRoom(urlRoom.toUpperCase()), 400);
     } else {
       show('s-lobby');
     }
