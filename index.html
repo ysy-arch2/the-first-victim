@@ -139,13 +139,13 @@
   <div class="bg-glow-white-soft"></div>
 
   <!-- ═══════════ [0] 로딩 화면 ═══════════ -->
-  <div class="screen show flex-col items-center justify-center w-full max-w-md z-10" id="s-loading">
+  <div class="screen flex-col items-center justify-center w-full max-w-md z-10" id="s-loading">
     <div class="text-4xl mb-4 waiting-pulse">🎙️</div>
     <p class="text-sm font-bold text-slate-400 tracking-widest">연결 중...</p>
   </div>
 
   <!-- ═══════════ [1] 방 선택 화면 ═══════════ -->
-  <div class="screen flex-col items-center justify-center w-full max-w-md z-10" id="s-lobby">
+  <div class="screen flex-col items-center justify-center w-full max-w-md z-10 show" id="s-lobby">
     <div class="mb-6 text-center">
       <h1 class="logo text-4xl sm:text-5xl text-white variety-title text-[#2ac1bc] whitespace-nowrap">THE FIRST VICTIM</h1>
       <p class="variety-sub text-sm tracking-[5px] text-[#ffffff] mt-2">운명의 마이크 🎙️</p>
@@ -655,16 +655,6 @@
     }
 
     document.addEventListener('contextmenu', e => e.preventDefault());
-
-    // ── URL에서 방 코드 읽기 → 자동 입장 ──
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlRoom = urlParams.get('room');
-    if (urlRoom) {
-      document.getElementById('room-input').value = urlRoom.toUpperCase();
-      setTimeout(() => window.joinRoom(), 300);
-    } else {
-      show('s-lobby');
-    }
   </script>
 
 
