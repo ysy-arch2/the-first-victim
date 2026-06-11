@@ -7,19 +7,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Square+Round:wght@400;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <style>
-    /* ── 브랜드 가이드 맞춤형 비주얼 설정 ── */
     @font-face {
       font-family: 'NexonMaplestory';
       src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NexonMaplestoryBold.woff') format('woff');
       font-weight: normal;
       font-style: normal;
     }
-
     :root {
       --bg-gradient: linear-gradient(135deg, #000000 0%, #0c1211 50%, #020202 100%);
       --text-main: #ffffff;
@@ -28,20 +24,9 @@
       --brand-white: #ffffff;
       --surface-glass: rgba(12, 18, 17, 0.75);
     }
+    * { font-family: 'NexonMaplestory', 'Nanum Square Round', -apple-system, sans-serif !important; }
+    body { background: var(--bg-gradient); color: var(--text-main); overflow-x: hidden; overflow-y: auto; perspective: 1000px; }
 
-    * {
-      font-family: 'NexonMaplestory', 'Nanum Square Round', -apple-system, sans-serif !important;
-    }
-
-    body {
-      background: var(--bg-gradient);
-      color: var(--text-main);
-      overflow-x: hidden;
-      overflow-y: auto;
-      perspective: 1000px;
-    }
-
-    /* ── 은은하게 일렁이는 백그라운드 앰비언트 빔 ── */
     .bg-glow-mint-primary {
       position: absolute; width: 500px; height: 500px;
       background: radial-gradient(circle, rgba(42, 193, 188, 0.22) 0%, transparent 70%);
@@ -63,757 +48,414 @@
       pointer-events: none; z-index: 1;
       animation: floatC 10s ease-in-out infinite alternate;
     }
+    @keyframes floatA { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(40px) scale(1.15); } }
+    @keyframes floatB { 0% { transform: translateY(0px) scale(1.1); } 100% { transform: translateY(-50px) scale(0.9); } }
+    @keyframes floatC { 0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.7; } 100% { transform: translate(-45%, -55%) scale(1.15); opacity: 1; } }
 
-    @keyframes floatA {
-      0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(40px) scale(1.15); }
-    }
-    @keyframes floatB {
-      0% { transform: translateY(0px) scale(1.1); }
-      100% { transform: translateY(-50px) scale(0.9); }
-    }
-    @keyframes floatC {
-      0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.7; }
-      100% { transform: translate(-45%, -55%) scale(1.15); opacity: 1; }
-    }
-
-    /* ── 예능 스타일 정방향 스티커 카드 효과 ── */
     .variety-card {
       background: var(--surface-glass);
       border: 3px solid var(--brand-mint);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 
-                  inset 0 1px 1px rgba(255, 255, 255, 0.15),
-                  0px 0px 25px rgba(42, 193, 188, 0.2);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.15), 0px 0px 25px rgba(42,193,188,0.2);
       border-radius: 32px;
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .variety-card:hover {
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9), 
-                  0px 0px 35px rgba(42, 193, 188, 0.35);
-    }
-
-    /* ── 폰트 아웃라인 & 스트로크 효과 ── */
     .variety-title {
       font-family: 'Black Han Sans', sans-serif !important;
-      text-transform: uppercase;
-      font-weight: 900;
-      letter-spacing: -1px;
+      text-transform: uppercase; font-weight: 900; letter-spacing: -1px;
       -webkit-text-stroke: 1.5px #000;
-      text-shadow: 3px 3px 0px #000, 
-                   0px 0px 20px rgba(42, 193, 188, 0.7);
+      text-shadow: 3px 3px 0px #000, 0px 0px 20px rgba(42,193,188,0.7);
     }
-
-    .variety-sub {
-      font-weight: 800;
-      letter-spacing: 3px;
-      text-shadow: 2px 2px 0px rgba(0,0,0,0.9);
-    }
-
-    /* ── 예능 벌룬 스타일 3D 프레스 버튼 ── */
+    .variety-sub { font-weight: 800; letter-spacing: 3px; text-shadow: 2px 2px 0px rgba(0,0,0,0.9); }
     .variety-btn {
-      font-weight: 800;
-      border: 3px solid var(--brand-black);
-      border-radius: 20px;
+      font-weight: 800; border: 3px solid var(--brand-black); border-radius: 20px;
       transform: translateY(0);
-      box-shadow: 0 6px 0px var(--brand-black), 0 12px 20px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 6px 0px var(--brand-black), 0 12px 20px rgba(0,0,0,0.6);
       transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.2);
     }
-    .variety-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 0px var(--brand-black), 0 16px 25px rgba(0, 0, 0, 0.7);
-    }
-    .variety-btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0px var(--brand-black), 0 4px 10px rgba(0, 0, 0, 0.6);
-    }
+    .variety-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 0px var(--brand-black), 0 16px 25px rgba(0,0,0,0.7); }
+    .variety-btn:active { transform: translateY(4px); box-shadow: 0 2px 0px var(--brand-black), 0 4px 10px rgba(0,0,0,0.6); }
+    .variety-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-    /* ── 3D 네온 물리 마이크 콘솔 버튼 ── */
     .mic-button-outer {
       width: 150px; height: 150px;
       background: radial-gradient(circle, #122524 0%, #030807 100%);
       border: 4px solid var(--brand-black);
-      box-shadow: 0 10px 0px var(--brand-black), 
-                  0 15px 30px rgba(0,0,0,0.7),
-                  inset 0 2px 5px rgba(255,255,255,0.1);
-      border-radius: 50%;
-      transition: all 0.1s ease;
+      box-shadow: 0 10px 0px var(--brand-black), 0 15px 30px rgba(0,0,0,0.7), inset 0 2px 5px rgba(255,255,255,0.1);
+      border-radius: 50%; transition: all 0.1s ease;
     }
     .mic-button-inner {
-      width: 100%; height: 100%;
-      border-radius: 50%;
+      width: 100%; height: 100%; border-radius: 50%;
       background: linear-gradient(135deg, #0a1110 0%, #030505 100%);
-      box-shadow: inset 0 -4px 8px rgba(0,0,0,0.9),
-                  inset 0 4px 8px rgba(255,255,255,0.1);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 6px; cursor: pointer;
-      border: 2px dashed rgba(42, 193, 188, 0.15);
-      transition: all 0.1s ease;
+      box-shadow: inset 0 -4px 8px rgba(0,0,0,0.9), inset 0 4px 8px rgba(255,255,255,0.1);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px; cursor: pointer; border: 2px dashed rgba(42,193,188,0.15); transition: all 0.1s ease;
     }
-    .mic-button-outer.active {
-      transform: translateY(6px);
-      box-shadow: 0 3px 0px var(--brand-black), 
-                  0 5px 15px rgba(0,0,0,0.7);
-    }
+    .mic-button-outer.active { transform: translateY(6px); box-shadow: 0 3px 0px var(--brand-black), 0 5px 15px rgba(0,0,0,0.7); }
     .mic-button-outer.active .mic-button-inner {
       background: radial-gradient(circle, #2ac1bc 0%, #158581 100%);
       border-color: var(--brand-white);
-      box-shadow: inset 0 4px 10px rgba(0,0,0,0.5),
-                  0 0 35px rgba(42, 193, 188, 0.8),
-                  0 0 70px rgba(42, 193, 188, 0.4);
+      box-shadow: inset 0 4px 10px rgba(0,0,0,0.5), 0 0 35px rgba(42,193,188,0.8), 0 0 70px rgba(42,193,188,0.4);
     }
 
-    /* ── 소리 주파수 스펙트럼 바 ── */
-    .spectrum-bar {
-      width: 6px; border-radius: 10px;
-      background: rgba(255, 255, 255, 0.1);
-      height: 12px; transition: all 0.2s ease;
-    }
+    .spectrum-bar { width: 6px; border-radius: 10px; background: rgba(255,255,255,0.1); height: 12px; transition: all 0.2s ease; }
     .spectrum-container.playing .spectrum-bar {
       background: linear-gradient(to top, var(--brand-mint), var(--brand-white));
       animation: bounceSpectrum 0.4s ease-in-out infinite alternate;
     }
-    @keyframes bounceSpectrum {
-      0% { transform: scaleY(1); }
-      100% { transform: scaleY(var(--scale)); }
-    }
+    @keyframes bounceSpectrum { 0% { transform: scaleY(1); } 100% { transform: scaleY(var(--scale)); } }
 
-    /* ── 예능 코멘트 전용 자막 카드 ── */
     .subtitle-card {
-      background: rgba(0, 0, 0, 0.9);
-      border: 3px solid var(--brand-mint);
-      border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 
-                  0 0 20px rgba(42, 193, 188, 0.25);
-      position: relative;
+      background: rgba(0,0,0,0.9); border: 3px solid var(--brand-mint); border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(42,193,188,0.25); position: relative;
     }
-    .subtitle-card::before {
-      content: '“';
-      position: absolute; left: 16px; top: -10px;
-      font-family: 'Black Han Sans', sans-serif !important;
-      font-size: 50px; color: var(--brand-mint); opacity: 0.8;
-    }
-    .subtitle-card::after {
-      content: '”';
-      position: absolute; right: 16px; bottom: -45px;
-      font-family: 'Black Han Sans', sans-serif !important;
-      font-size: 50px; color: var(--brand-mint); opacity: 0.8;
-    }
+    .subtitle-card::before { content: '"'; position: absolute; left: 16px; top: -10px; font-family: 'Black Han Sans', sans-serif !important; font-size: 50px; color: var(--brand-mint); opacity: 0.8; }
+    .subtitle-card::after { content: '"'; position: absolute; right: 16px; bottom: -45px; font-family: 'Black Han Sans', sans-serif !important; font-size: 50px; color: var(--brand-mint); opacity: 0.8; }
 
-    /* 화면 분할 애니메이션 */
-    .screen {
-      display: none;
-      opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      transform: scale(0.95) translateY(10px);
-    }
-    .screen.show {
-      display: flex;
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
+    .screen { display: none; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; transform: scale(0.95) translateY(10px); }
+    .screen.show { display: flex; opacity: 1; transform: scale(1) translateY(0); }
 
-    /* ── 실시간 랭킹 카드 및 전용 스티커 배지 ── */
-    .ranking-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 2px dashed rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
+    .ranking-card { background: rgba(255,255,255,0.03); border: 2px dashed rgba(255,255,255,0.1); transition: all 0.3s ease; }
     .ranking-card.victory {
-      background: linear-gradient(135deg, rgba(42, 193, 188, 0.18) 0%, rgba(255, 255, 255, 0.04) 100%);
+      background: linear-gradient(135deg, rgba(42,193,188,0.18) 0%, rgba(255,255,255,0.04) 100%);
       border: 3px solid var(--brand-mint);
-      box-shadow: 0 12px 30px rgba(42, 193, 188, 0.3),
-                  inset 0 1px 1px rgba(255,255,255,0.15);
+      box-shadow: 0 12px 30px rgba(42,193,188,0.3), inset 0 1px 1px rgba(255,255,255,0.15);
       transform: scale(1.04);
     }
+    .pcrown { font-size: 13px; font-weight: 800; display: inline-block; padding: 4px 14px; border-radius: 9999px; border: 2.5px solid var(--brand-black); box-shadow: 2px 2.5px 0px var(--brand-black); letter-spacing: -0.3px; }
+    .pcrown.badge-safe { background-color: var(--brand-mint); color: var(--brand-black); }
+    .pcrown.badge-first { background-color: #ff4b55; color: var(--brand-white); }
 
-    /* 🎮 쫄깃쫄깃한 스티커 배지 폰트 스타일 */
-    .pcrown {
-      font-size: 13px;
-      font-weight: 800;
-      display: inline-block;
-      padding: 4px 14px;
-      border-radius: 9999px;
-      border: 2.5px solid var(--brand-black);
-      box-shadow: 2px 2.5px 0px var(--brand-black);
-      letter-spacing: -0.3px;
-    }
-    .pcrown.badge-safe {
-      background-color: var(--brand-mint);
-      color: var(--brand-black);
-    }
-    .pcrown.badge-first {
-      background-color: #ff4b55;
-      color: var(--brand-white);
-    }
+    /* 대기 상태 펄스 */
+    .waiting-pulse { animation: waitPulse 1.5s ease-in-out infinite; }
+    @keyframes waitPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen relative p-4 py-16 select-none">
 
-  <!-- ── 앰비언트 비주얼 레이어 ── -->
   <div class="bg-glow-mint-primary"></div>
   <div class="bg-glow-mint-secondary"></div>
   <div class="bg-glow-white-soft"></div>
 
-  <!-- ═══════════ [1] WELCOME SCREEN (메인 홈) ═══════════ -->
-  <div class="screen show flex-col items-center justify-center w-full max-w-md z-10" id="s-welcome">
-    <!-- 로고 뱃지 & 메인 비주얼 -->
-    <div class="mb-6 select-none pointer-events-none text-center">
-      <h1 class="logo text-4xl sm:text-5xl md:text-6xl text-white variety-title text-[#2ac1bc] whitespace-nowrap">THE FIRST VICTIM</h1>
+  <!-- ═══════════ [0] 로딩 화면 ═══════════ -->
+  <div class="screen show flex-col items-center justify-center w-full max-w-md z-10" id="s-loading">
+    <div class="text-4xl mb-4 waiting-pulse">🎙️</div>
+    <p class="text-sm font-bold text-slate-400 tracking-widest">연결 중...</p>
+  </div>
+
+  <!-- ═══════════ [1] 방 선택 화면 ═══════════ -->
+  <div class="screen flex-col items-center justify-center w-full max-w-md z-10" id="s-lobby">
+    <div class="mb-6 text-center">
+      <h1 class="logo text-4xl sm:text-5xl text-white variety-title text-[#2ac1bc] whitespace-nowrap">THE FIRST VICTIM</h1>
       <p class="variety-sub text-sm tracking-[5px] text-[#ffffff] mt-2">운명의 마이크 🎙️</p>
     </div>
 
-    <!-- 유쾌한 오프닝 미션 카드 -->
-    <div class="variety-card w-full p-6 mb-8 text-center text-slate-100 relative overflow-hidden">
-      <!-- 배경 장식 글래스 로고 패턴 -->
-      <div class="absolute -right-12 -bottom-12 text-[120px] font-black text-white/5 pointer-events-none select-none">3S</div>
-      
-      <p class="text-base sm:text-lg font-bold leading-normal mb-4 select-none text-white">
+    <div class="variety-card w-full p-6 mb-6 text-center text-slate-100">
+      <p class="text-base font-bold leading-normal mb-4 text-white">
         "동시통역사는 항상 화자보다<br>
-        <span class="text-[#2ac1bc] text-lg sm:text-xl font-black tracking-tight">딱 3초 뒤</span>에 살고 있다."
+        <span class="text-[#2ac1bc] text-lg font-black">딱 3초 뒤</span>에 살고 있다."
       </p>
-      
       <div class="bg-[#050c0a] border-2 border-dashed border-[#2ac1bc]/30 rounded-2xl p-4 text-left">
         <span class="inline-block text-[10px] font-extrabold tracking-[2px] text-[#2ac1bc] uppercase mb-1">🔥 룰 설명</span>
-        <p class="text-[12px] leading-relaxed text-slate-300 font-medium mb-2">
-          마이크 버튼을 누르고 있다가 딱 3.000초가 지났다 생각될 때 손을 놓으세요.
-        </p>
-        <p class="text-[12px] leading-relaxed text-slate-300 font-medium mb-2">
-          오차 범위가 더 큰 분이 오늘 세션의 첫 스타트를 끊을 주인공이 됩니다!
-        </p>
-        <div class="border-t border-[#2ac1bc]/10 pt-2 text-[10px] text-[#2ac1bc]/80 leading-relaxed flex items-start gap-1.5">
-          <span class="shrink-0">💡</span>
-          <span>배정인비에 기재된 이름 순서대로 진행하시면 싸우실 필요가 없습니다 🤣<br>(첫 번째 이름 = Player 1, 두 번째 이름 = Player 2)</span>
-        </div>
+        <p class="text-[12px] leading-relaxed text-slate-300 font-medium mb-2">마이크 버튼을 누르고 있다가 딱 3.000초가 지났다 생각될 때 손을 놓으세요.</p>
+        <p class="text-[12px] leading-relaxed text-slate-300 font-medium">오차 범위가 더 큰 분이 오늘 세션의 첫 스타트를 끊을 주인공이 됩니다!</p>
       </div>
     </div>
 
-    <button class="variety-btn bg-[#2ac1bc] hover:bg-[#4dd2ce] text-black w-full py-4 text-lg flex items-center justify-center font-black" onclick="startP1()">
-      <svg class="w-5 h-5 mr-1.5 fill-black" viewBox="0 0 24 24">
-        <path d="M8 5v14l11-7z"/>
-      </svg>START
+    <!-- 방 코드 입력 -->
+    <div class="w-full mb-4">
+      <p class="text-xs font-bold text-slate-400 mb-2 tracking-widest text-center">방 코드 입력 (같은 코드로 접속하면 연결!)</p>
+      <input id="room-input" type="text" maxlength="6"
+        class="w-full bg-black/60 border-2 border-[#2ac1bc]/50 focus:border-[#2ac1bc] rounded-2xl px-5 py-3 text-center text-2xl font-black text-white tracking-[8px] outline-none uppercase"
+        placeholder="예: ABC123" oninput="this.value=this.value.toUpperCase()">
+    </div>
+
+    <button class="variety-btn bg-[#2ac1bc] hover:bg-[#4dd2ce] text-black w-full py-4 text-lg flex items-center justify-center font-black" onclick="joinRoom()">
+      <svg class="w-5 h-5 mr-1.5 fill-black" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>입장하기
     </button>
   </div>
 
-  <!-- ═══════════ [2] PLAYER 1 PLAY SCREEN ═══════════ -->
+  <!-- ═══════════ [2] 대기 화면 (상대방 기다리는 중) ═══════════ -->
+  <div class="screen flex-col items-center justify-center w-full max-w-md z-10" id="s-waiting">
+    <div class="text-6xl mb-6 waiting-pulse">⏳</div>
+    <h2 class="text-2xl font-black text-white mb-2 text-center">상대방을 기다리는 중...</h2>
+    <p class="text-sm text-slate-400 mb-6 text-center">같은 방 코드로 접속하면 게임이 시작됩니다</p>
+    <div class="variety-card w-full p-4 text-center mb-6">
+      <p class="text-xs text-slate-400 mb-1">방 코드</p>
+      <p class="text-3xl font-black text-[#2ac1bc] tracking-[8px]" id="display-room-code">------</p>
+    </div>
+    <p class="text-xs text-slate-500" id="my-role-display"></p>
+  </div>
+
+  <!-- ═══════════ [3] PLAYER 1 PLAY SCREEN ═══════════ -->
   <div class="screen flex-col items-center justify-center w-full max-w-md z-10" id="s-p1-play">
-    <!-- 캐릭터 배지 -->
     <div class="inline-flex items-center gap-2 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-full px-5 py-1.5 text-xs font-bold tracking-[2.5px] text-[#2ac1bc] mb-4 shadow-[0_0_15px_rgba(42,193,188,0.2)]">
       <span class="w-2.5 h-2.5 rounded-full bg-[#2ac1bc] animate-pulse"></span>PLAYER 1
     </div>
-
     <h2 class="text-2xl font-bold tracking-tight mb-1 text-center">마이크를 지긋이 누르세요</h2>
     <p class="text-xs text-slate-400 mb-4 text-center">감각의 정점! 3.000초 시점에 전광석화처럼 떼세요</p>
-
-    <!-- 스펙트럼 비주얼라이저 -->
     <div class="spectrum-container flex items-center justify-center gap-1.5 h-10 mb-4" id="wf1">
-      <div class="spectrum-bar" style="--scale: 3;"></div>
-      <div class="spectrum-bar" style="--scale: 5.5;"></div>
-      <div class="spectrum-bar" style="--scale: 4;"></div>
-      <div class="spectrum-bar" style="--scale: 7;"></div>
-      <div class="spectrum-bar" style="--scale: 3.5;"></div>
-      <div class="spectrum-bar" style="--scale: 6;"></div>
-      <div class="spectrum-bar" style="--scale: 4.5;"></div>
-      <div class="spectrum-bar" style="--scale: 8;"></div>
-      <div class="spectrum-bar" style="--scale: 4;"></div>
-      <div class="spectrum-bar" style="--scale: 5.5;"></div>
+      <div class="spectrum-bar" style="--scale: 3;"></div><div class="spectrum-bar" style="--scale: 5.5;"></div>
+      <div class="spectrum-bar" style="--scale: 4;"></div><div class="spectrum-bar" style="--scale: 7;"></div>
+      <div class="spectrum-bar" style="--scale: 3.5;"></div><div class="spectrum-bar" style="--scale: 6;"></div>
+      <div class="spectrum-bar" style="--scale: 4.5;"></div><div class="spectrum-bar" style="--scale: 8;"></div>
+      <div class="spectrum-bar" style="--scale: 4;"></div><div class="spectrum-bar" style="--scale: 5.5;"></div>
       <div class="spectrum-bar" style="--scale: 3;"></div>
     </div>
-
-    <!-- 진행 상황 프로그레스 레일 -->
     <div class="w-full max-w-xs mb-5">
       <div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1.5">
-        <span>0.0s</span>
-        <span class="text-[#2ac1bc]">TARGET: 3.000s</span>
-        <span>6.0s</span>
+        <span>0.0s</span><span class="text-[#2ac1bc]">TARGET: 3.000s</span><span>6.0s</span>
       </div>
       <div class="relative h-2 bg-black/50 border border-white/10 rounded-full overflow-visible">
         <div class="h-full bg-gradient-to-r from-[#2ac1bc] to-white rounded-full transition-all duration-[40ms]" id="pf1" style="width: 0%;"></div>
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-5 bg-[#2ac1bc] rounded-sm shadow-[0_0_10px_#2ac1bc]"></div>
       </div>
     </div>
-
-    <!-- 마이크 콘솔 스위치 -->
     <div class="flex justify-center mb-4">
       <div class="mic-button-outer" id="hb1">
         <div class="mic-button-inner">
-          <svg class="w-9 h-9 text-white/40 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
-          </svg>
+          <svg class="w-9 h-9 text-white/40" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
           <span class="text-[11px] font-bold tracking-[1px] opacity-70 mt-1">꾹 누르기</span>
         </div>
       </div>
     </div>
-
-    <!-- 타이머 전광판 -->
-    <div class="timer text-6xl font-black text-slate-600 transition-colors duration-150 select-none text-center" id="tm1">0.000</div>
+    <div class="timer text-6xl font-black text-slate-600 select-none text-center" id="tm1">0.000</div>
   </div>
 
-  <!-- ═══════════ [3] PLAYER 1 RESULT SCREEN ═══════════ -->
-  <div class="screen flex-col items-center justify-center w-full max-w-md z-10" id="s-p1-result">
-    <div class="inline-flex items-center gap-2 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-full px-5 py-1.5 text-xs font-bold tracking-[2.5px] text-[#2ac1bc] mb-8">
-      PLAYER 1 측정 결과
+  <!-- ═══════════ [4] PLAYER 1 대기 (P2 플레이 대기) ═══════════ -->
+  <div class="screen flex-col items-center justify-center w-full max-w-md z-10" id="s-p1-wait">
+    <div class="text-7xl mb-4 animate-bounce" id="re1-wait">🎯</div>
+    <p class="text-sm font-bold text-[#2ac1bc] mb-1">내 기록</p>
+    <p class="text-5xl font-black text-white mb-6" id="rt1-wait">0.000초</p>
+    <div class="variety-card w-full p-5 text-center">
+      <div class="text-2xl mb-2 waiting-pulse">⏳</div>
+      <p class="text-sm font-bold text-slate-300">상대방 플레이 중...</p>
+      <p class="text-xs text-slate-500 mt-1">결과가 나오면 자동으로 이동합니다</p>
     </div>
-
-    <div class="res-emoji text-7xl mb-4 animate-bounce" id="re1">🎯</div>
-
-    <div class="text-center mb-1">
-      <span class="text-7xl font-black text-[#2ac1bc]" id="rt1">3.000</span>
-      <span class="text-2xl font-bold ml-1 text-slate-400">초</span>
-    </div>
-
-    <p class="text-xs text-slate-400 mb-6 text-center" id="rd1">목표 3.000초와 <strong class="text-[#2ac1bc]">±0.000초</strong> 차이</p>
-
-    <!-- 유쾌발랄 예능 자막 테두리 카드 -->
-    <div class="subtitle-card w-full p-6 mb-8 text-center">
-      <p class="text-base sm:text-lg font-bold leading-relaxed text-[#2ac1bc]" id="rc1">
-        "마이크 테스트는 끝났군요!"
-      </p>
-    </div>
-
-    <button class="variety-btn bg-[#2ac1bc] hover:bg-[#4dd2ce] text-black w-full py-4 text-base flex items-center justify-center font-black" onclick="startP2()">
-      Player 2 시작하기
-      <svg class="w-5 h-5 ml-1 fill-black" viewBox="0 0 24 24">
-        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-      </svg>
-    </button>
   </div>
 
-  <!-- ═══════════ [4] PLAYER 2 PLAY SCREEN ═══════════ -->
+  <!-- ═══════════ [5] PLAYER 2 PLAY SCREEN ═══════════ -->
   <div class="screen flex-col items-center justify-center w-full max-w-md z-10" id="s-p2-play">
-    <!-- 캐릭터 배지 -->
-    <div class="inline-flex items-center gap-2 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-full px-5 py-1.5 text-xs font-bold tracking-[2.5px] text-[#2ac1bc] mb-3 shadow-[0_0_15px_rgba(42,193,188,0.2)]">
+    <div class="inline-flex items-center gap-2 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-full px-5 py-1.5 text-xs font-bold tracking-[2.5px] text-[#2ac1bc] mb-3">
       <span class="w-2.5 h-2.5 rounded-full bg-[#2ac1bc] animate-pulse"></span>PLAYER 2
     </div>
-
-    <!-- 실시간 라이벌 대결 유도 바 -->
     <div class="bg-black/40 border border-[#2ac1bc]/20 rounded-xl px-4 py-2 text-xs text-slate-300 font-medium mb-4 flex items-center justify-center gap-2">
       🔥 Player 1 기록 : <strong class="text-[#2ac1bc]" id="p1ref-val">0.000초</strong> <span class="text-slate-500">|</span> 역전할 기회!
     </div>
-
     <h2 class="text-2xl font-bold tracking-tight mb-1 text-center">마이크를 지긋이 누르세요</h2>
     <p class="text-xs text-slate-400 mb-4 text-center">감각의 정점! 3.000초 시점에 전광석화처럼 떼세요</p>
-
-    <!-- 스펙트럼 비주얼라이저 -->
     <div class="spectrum-container flex items-center justify-center gap-1.5 h-10 mb-4" id="wf2">
-      <div class="spectrum-bar" style="--scale: 4;"></div>
-      <div class="spectrum-bar" style="--scale: 3.5;"></div>
-      <div class="spectrum-bar" style="--scale: 6;"></div>
-      <div class="spectrum-bar" style="--scale: 5.5;"></div>
-      <div class="spectrum-bar" style="--scale: 8;"></div>
-      <div class="spectrum-bar" style="--scale: 4.5;"></div>
-      <div class="spectrum-bar" style="--scale: 7;"></div>
-      <div class="spectrum-bar" style="--scale: 3.5;"></div>
-      <div class="spectrum-bar" style="--scale: 5;"></div>
-      <div class="spectrum-bar" style="--scale: 3;"></div>
+      <div class="spectrum-bar" style="--scale: 4;"></div><div class="spectrum-bar" style="--scale: 3.5;"></div>
+      <div class="spectrum-bar" style="--scale: 6;"></div><div class="spectrum-bar" style="--scale: 5.5;"></div>
+      <div class="spectrum-bar" style="--scale: 8;"></div><div class="spectrum-bar" style="--scale: 4.5;"></div>
+      <div class="spectrum-bar" style="--scale: 7;"></div><div class="spectrum-bar" style="--scale: 3.5;"></div>
+      <div class="spectrum-bar" style="--scale: 5;"></div><div class="spectrum-bar" style="--scale: 3;"></div>
       <div class="spectrum-bar" style="--scale: 4;"></div>
     </div>
-
-    <!-- 진행 상황 프로그레스 레일 -->
     <div class="w-full max-w-xs mb-5">
       <div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1.5">
-        <span>0.0s</span>
-        <span class="text-[#2ac1bc]">TARGET: 3.000s</span>
-        <span>6.0s</span>
+        <span>0.0s</span><span class="text-[#2ac1bc]">TARGET: 3.000s</span><span>6.0s</span>
       </div>
       <div class="relative h-2 bg-black/50 border border-white/10 rounded-full overflow-visible">
         <div class="h-full bg-gradient-to-r from-white to-[#2ac1bc] rounded-full transition-all duration-[40ms]" id="pf2" style="width: 0%;"></div>
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-5 bg-[#2ac1bc] rounded-sm shadow-[0_0_10px_#2ac1bc]"></div>
       </div>
     </div>
-
-    <!-- 마이크 콘솔 스위치 -->
     <div class="flex justify-center mb-4">
       <div class="mic-button-outer" id="hb2">
         <div class="mic-button-inner">
-          <svg class="w-9 h-9 text-white/40 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
-          </svg>
+          <svg class="w-9 h-9 text-white/40" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
           <span class="text-[11px] font-bold tracking-[1px] opacity-70 mt-1">꾹 누르기</span>
         </div>
       </div>
     </div>
-
-    <!-- 타이머 전광판 (스크린 하단 여백 추가 확보로 안전하게 설계) -->
-    <div class="timer text-6xl font-black text-slate-600 transition-colors duration-150 select-none text-center" id="tm2">0.000</div>
+    <div class="timer text-6xl font-black text-slate-600 select-none text-center" id="tm2">0.000</div>
   </div>
 
-  <!-- ═══════════ [5] PLAYER 2 RESULT SCREEN ═══════════ -->
-  <div class="screen flex-col items-center justify-center w-full max-w-md z-10" id="s-p2-result">
-    <div class="inline-flex items-center gap-2 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-full px-5 py-1.5 text-xs font-bold tracking-[2.5px] text-[#2ac1bc] mb-8">
-      PLAYER 2 측정 결과
-    </div>
-
-    <div class="res-emoji text-7xl mb-4 animate-bounce" id="re2">🎯</div>
-
-    <div class="text-center mb-1">
-      <span class="text-7xl font-black text-[#2ac1bc]" id="rt2">3.000</span>
-      <span class="text-2xl font-bold ml-1 text-slate-400">초</span>
-    </div>
-
-    <p class="text-xs text-slate-400 mb-6 text-center" id="rd2">목표 3.000초와 <strong class="text-[#2ac1bc]">±0.000초</strong> 차이</p>
-
-    <div class="subtitle-card w-full p-6 mb-8 text-center">
-      <p class="text-base sm:text-lg font-bold leading-relaxed text-[#2ac1bc]" id="rc2">
-        "마이크 테스트는 끝났군요!"
-      </p>
-    </div>
-
-    <button class="variety-btn bg-[#2ac1bc] hover:bg-[#4dd2ce] text-black w-full py-4 text-base" onclick="showFinal()">
-      마이크 주인공 최종 발표! 👑
-    </button>
-  </div>
-
-  <!-- ═══════════ [6] FINAL RANKING SCREEN (종합 결산) ═══════════ -->
+  <!-- ═══════════ [6] FINAL RANKING SCREEN ═══════════ -->
   <div class="screen flex-col items-center justify-center w-full max-w-md z-10" id="s-final">
     <div class="inline-block bg-[#2ac1bc] text-black font-extrabold text-[10px] px-4 py-1 rounded-full uppercase tracking-[2px] mb-6">
       🏆 최종 결과 분석표
     </div>
-
-    <!-- 대결 비교 대시보드 (스티커형) -->
     <div class="grid grid-cols-5 gap-3 w-full max-w-md mb-8 items-center">
-      <!-- Player 1 카드 -->
       <div class="ranking-card col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between" id="fc1">
         <div>
           <div class="h-11 flex items-center justify-center mb-3" id="crn1"></div>
           <p class="text-[10px] font-extrabold tracking-[2px] text-slate-400">PLAYER 1</p>
           <p class="text-2xl font-black text-white mt-1" id="ft1">0.000s</p>
         </div>
-        <div>
-          <p class="text-[11px] text-slate-400 font-semibold mt-3" id="fd1">오차: ±0.000s</p>
-        </div>
+        <div><p class="text-[11px] text-slate-400 font-semibold mt-3" id="fd1">오차: ±0.000s</p></div>
       </div>
-
-      <!-- VS 구분선 -->
       <div class="col-span-1 flex flex-col items-center justify-center">
         <span class="font-black text-xl italic text-slate-500">VS</span>
       </div>
-
-      <!-- Player 2 카드 -->
       <div class="ranking-card col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between" id="fc2">
         <div>
           <div class="h-11 flex items-center justify-center mb-3" id="crn2"></div>
           <p class="text-[10px] font-extrabold tracking-[2px] text-slate-400">PLAYER 2</p>
           <p class="text-2xl font-black text-white mt-1" id="ft2">0.000s</p>
         </div>
-        <div>
-          <p class="text-[11px] text-slate-400 font-semibold mt-3" id="fd2">오차: ±0.000s</p>
-        </div>
+        <div><p class="text-[11px] text-slate-400 font-semibold mt-3" id="fd2">오차: ±0.000s</p></div>
       </div>
     </div>
-
-    <!-- 최고의 명대사 발표 보드 -->
     <div class="variety-card w-full p-8 mb-8 text-center relative">
       <div class="absolute -right-6 -top-6 text-7xl opacity-15 rotate-12">🎙️</div>
       <h2 class="text-xl font-bold tracking-tight text-white mb-2" id="fwinner">PLAYER 1 승리!</h2>
-      <p class="text-sm text-slate-300 leading-relaxed font-semibold" id="fsub">
-        오늘 세션의 첫 마이크는 Player 2가 가져갑니다! 🎙️
-      </p>
+      <p class="text-sm text-slate-300 leading-relaxed font-semibold" id="fsub">오늘 세션의 첫 마이크는 Player 2가 가져갑니다! 🎙️</p>
     </div>
-
-    <!-- 액션 컬럼 (세션 시작 버튼 삭제, 처음으로 버튼 민트색화) -->
     <div class="w-full">
       <button class="variety-btn bg-[#2ac1bc] hover:bg-[#4dd2ce] text-black w-full py-4 text-base flex items-center justify-center font-black" onclick="restart()">
-        <svg class="w-5 h-5 mr-1.5 fill-black" viewBox="0 0 24 24">
-          <path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-        </svg>처음으로 돌아가기
+        <svg class="w-5 h-5 mr-1.5 fill-black" viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>처음으로 돌아가기
       </button>
     </div>
   </div>
 
-  <!-- ── 하단 푸터 ── -->
   <footer class="fixed bottom-4 text-[10px] tracking-[4px] font-extrabold text-slate-600 uppercase select-none pointer-events-none text-center">
     THE FIRST VICTIM · 3초의 법칙
   </footer>
 
-  <script>
-    'use strict';
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // ── 게임 핵심 환경 변수 ──
+    // ── Firebase 설정 ──
+    const firebaseConfig = {
+      apiKey: "AIzaSyArJEoLmzxRTwfrVOnq0VU_sawqAucalGc",
+      authDomain: "the-first-victim.firebaseapp.com",
+      databaseURL: "https://the-first-victim-default-rtdb.firebaseio.com",
+      projectId: "the-first-victim",
+      storageBucket: "the-first-victim.firebasestorage.app",
+      messagingSenderId: "471173360675",
+      appId: "1:471173360675:web:a13871b05126c95d851596"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // ── 게임 상태 ──
     const TARGET = 3.0;
     const MAX = 6.0;
+    let myRole = null; // 'p1' or 'p2'
+    let roomCode = null;
+    let roomRef = null;
+    let p1t = null, p2t = null;
 
-    let p1t = null, p2t = null, tied = false;
-
-    // ── 화면 제어 라이브러리 ──
+    // ── 화면 제어 ──
     function show(id) {
-      document.querySelectorAll('.screen').forEach(s => {
-        s.classList.remove('show');
-      });
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('show'));
       setTimeout(() => {
-        const targetScreen = document.getElementById(id);
-        if(targetScreen) targetScreen.classList.add('show');
+        const el = document.getElementById(id);
+        if (el) el.classList.add('show');
       }, 50);
     }
 
-    // ── STREAMING_CHUNK: Setting up visual/musical responses ──
-    function judge(t) {
-      const d = Math.abs(t - TARGET);
-      
-      if (d <= 0.05) {
-        return { emoji: "🎯", text: "AI도 울고 갈 칼타이밍! 인간 통역사의 승리입니다.", sfx: "victory" };
-      }
-      if (d <= 0.20) {
-        return { emoji: "✨", text: "귀에 착 감기는 동시통역처럼 완벽한 타이밍이네요.", sfx: "victory" };
-      }
-      if (d <= 0.50) {
-        return { emoji: "👍", text: "좋은 스타트입니다. 마이크 테스트는 끝났군요!", sfx: null };
-      }
-      
-      if (t < TARGET) {
-        if (t < 2.0) {
-          return { emoji: "🔮", text: "이것은 동시통역인가, 미래를 보는 예언인가!", sfx: "mystic" };
-        }
-        return { emoji: "⚡", text: "연사님의 숨소리까지 통역할 기세시군요!", sfx: null };
+    // ── 방 입장 ──
+    window.joinRoom = async function() {
+      const code = document.getElementById('room-input').value.trim().toUpperCase();
+      if (code.length < 2) { alert('방 코드를 입력해주세요! (2자 이상)'); return; }
+
+      roomCode = code;
+      roomRef = ref(db, 'rooms/' + code);
+
+      const snap = await get(roomRef);
+      const data = snap.val();
+
+      if (!data) {
+        // 방 없음 → Player 1로 생성
+        myRole = 'p1';
+        await set(roomRef, { state: 'waiting', p1_ready: true, p2_ready: false, p1t: null, p2t: null });
+      } else if (data.state === 'waiting' && data.p1_ready && !data.p2_ready) {
+        // 대기 중인 방 있음 → Player 2로 입장
+        myRole = 'p2';
+        await update(roomRef, { p2_ready: true, state: 'playing' });
       } else {
-        if (t > 4.2) {
-          return { emoji: "☕", text: "연사님이 물 한 모금 마실 시간까지 챙겨주는 배려심!", sfx: "peaceful" };
-        }
-        return { emoji: "🧘", text: "더 완벽한 표현을 고르기 위한 깊은 고뇌의 시간!", sfx: null };
+        alert('이미 진행 중인 방이거나 가득 찼어요. 다른 방 코드를 써주세요!');
+        return;
       }
-    }
 
-    // ── Web Audio API 사운드 라이브러리 ──
-    let _actx = null;
-    let _tensionOsc = null;
-    let _tensionGain = null;
+      document.getElementById('display-room-code').textContent = roomCode;
+      document.getElementById('my-role-display').textContent = `나는 ${myRole === 'p1' ? 'Player 1' : 'Player 2'}`;
 
-    function getACtx() {
-      if (!_actx) {
-        try { _actx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
-      }
-      if (_actx && _actx.state === 'suspended') {
-        _actx.resume().catch(() => {});
-      }
-      return _actx;
-    }
-
-    function playTap() {
-      const ctx = getACtx(); if (!ctx) return;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.type = 'sine'; osc.frequency.value = 580;
-      gain.gain.setValueAtTime(0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.12);
-    }
-
-    function startTensionSound() {
-      const ctx = getACtx(); if (!ctx) return;
-      try {
-        _tensionOsc = ctx.createOscillator();
-        _tensionGain = ctx.createGain();
-        _tensionOsc.connect(_tensionGain);
-        _tensionGain.connect(ctx.destination);
-
-        _tensionOsc.type = 'triangle';
-        _tensionOsc.frequency.setValueAtTime(180, ctx.currentTime);
-        _tensionOsc.frequency.linearRampToValueAtTime(600, ctx.currentTime + 3.0);
-        _tensionOsc.frequency.linearRampToValueAtTime(1000, ctx.currentTime + 6.0);
-
-        _tensionGain.gain.setValueAtTime(0, ctx.currentTime);
-        _tensionGain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.1);
-        _tensionOsc.start(ctx.currentTime);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    function stopTensionSound() {
-      if (_tensionOsc) {
-        try {
-          _tensionGain.gain.cancelScheduledValues(_actx.currentTime);
-          _tensionGain.gain.setValueAtTime(_tensionGain.gain.value, _actx.currentTime);
-          _tensionGain.gain.exponentialRampToValueAtTime(0.001, _actx.currentTime + 0.05);
-          _tensionOsc.stop(_actx.currentTime + 0.06);
-        } catch (e) {}
-        _tensionOsc = null;
-        _tensionGain = null;
-      }
-    }
-
-    function triggerSoundByGrade(sfx) {
-      if (sfx === 'victory')  playVictoryFanfare();
-      if (sfx === 'mystic')   playMystic();
-      if (sfx === 'peaceful') playPeaceful();
-    }
-
-    function playMystic() {
-      const ctx = getACtx(); if (!ctx) return;
-      [261.6, 311.1, 370.0, 466.2, 554.4, 622.3, 740.0].forEach((freq, i) => {
-        const osc  = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.type = 'sine'; osc.frequency.value = freq;
-        const t = ctx.currentTime + i * 0.11;
-        gain.gain.setValueAtTime(0, t);
-        gain.gain.linearRampToValueAtTime(0.12, t + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
-        osc.start(t); osc.stop(t + 0.45);
-      });
-    }
-
-    function playPeaceful() {
-      const ctx = getACtx(); if (!ctx) return;
-      [261.6, 329.6, 392.0, 523.3].forEach((freq, i) => {
-        const osc  = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.type = 'sine'; osc.frequency.value = freq;
-        const delay = i * 0.15;
-        gain.gain.setValueAtTime(0, ctx.currentTime + delay);
-        gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + delay + 0.2);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 2.0);
-        osc.start(ctx.currentTime + delay);
-        osc.stop(ctx.currentTime + delay + 2.0);
-      });
-    }
-
-    function playVictoryFanfare() {
-      const ctx = getACtx(); if (!ctx) return;
-      const notes = [523.25, 659.25, 783.99, 1046.50];
-      notes.forEach((freq, i) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        const t = ctx.currentTime + i * 0.08;
-        gain.gain.setValueAtTime(0, t);
-        gain.gain.linearRampToValueAtTime(0.1, t + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
-        osc.start(t); osc.stop(t + 0.4);
-      });
-    }
-
-    // ── STREAMING_CHUNK: Setting up touch / hold micro-interaction engine ──
-    function initHold(btnId, wfId, pfId, tmId, onDone) {
-      const btn = document.getElementById(btnId);
-      const wf  = document.getElementById(wfId);
-      const pf  = document.getElementById(pfId);
-      const tm  = document.getElementById(tmId);
-
-      // 그래픽 리셋 및 인터랙션 마운트
-      btn.classList.remove('active');
-      wf.classList.remove('playing');
-      pf.style.width = '0%';
-      tm.textContent = '0.000';
-      tm.className = "timer text-6xl font-black";
-
-      const bars = wf.querySelectorAll('.spectrum-bar');
-      let t0 = null, raf = null, done = false;
-
-      function start(e) {
-        if (e.cancelable) e.preventDefault();
-        if (t0 !== null || done) return;
-        
-        getACtx();
-        playTap();
-        startTensionSound();
-
-        t0 = performance.now();
-        btn.classList.add('active');
-        wf.classList.add('playing');
-
-        (function tick() {
-          const el = (performance.now() - t0) / 1000;
-          tm.textContent = el.toFixed(3);
-          pf.style.width = Math.min(el / MAX * 100, 100) + '%';
-
-          if (el >= 3.6) {
-            tm.className = "timer text-6xl font-black text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)] mt-2 animate-pulse";
-          } else if (el >= 2.6) {
-            tm.className = "timer text-6xl font-black text-[#2ac1bc] shadow-[0_0_15px_rgba(42,193,188,0.5)] mt-2";
-          } else {
-            tm.className = "timer text-6xl font-black text-white mt-2";
+      if (myRole === 'p1') {
+        show('s-waiting');
+        // P2 입장 대기
+        onValue(roomRef, (snap) => {
+          const d = snap.val();
+          if (d && d.state === 'playing') {
+            startP1Game();
           }
-
-          bars.forEach(bar => {
-            const randomH = 2 + Math.random() * 8 * Math.min(el, 2);
-            bar.style.setProperty('--scale', randomH);
-          });
-
-          if (el >= MAX) { release(null); return; }
-          raf = requestAnimationFrame(tick);
-        })();
+        }, { onlyOnce: false });
+      } else {
+        // P2는 바로 게임 시작 대기 (P1 결과 기다림)
+        startP2Listener();
       }
+    };
 
-      function release(e) {
-        if (t0 === null || done) return;
-        if (e && e.cancelable) e.preventDefault();
-        done = true;
-
-        cancelAnimationFrame(raf);
-        stopTensionSound();
-        playTap();
-
-        const elapsed = Math.min((performance.now() - t0) / 1000, MAX);
-        t0 = null;
-
-        btn.classList.remove('active');
-        wf.classList.remove('playing');
-        
-        tm.textContent = elapsed.toFixed(3);
-        tm.className = "timer text-6xl font-black text-emerald-400 mt-2";
-        pf.style.width = Math.min(elapsed / MAX * 100, 100) + '%';
-
-        btn.removeEventListener('mousedown', start);
-        btn.removeEventListener('touchstart', start);
-        btn.removeEventListener('mouseup', release);
-        btn.removeEventListener('touchend', release);
-        btn.removeEventListener('mouseleave', release);
-
-        setTimeout(() => onDone(elapsed), 400);
-      }
-
-      btn.addEventListener('mousedown', start);
-      btn.addEventListener('touchstart', start, { passive: false });
-      btn.addEventListener('mouseup', release);
-      btn.addEventListener('touchend', release, { passive: false });
-      btn.addEventListener('mouseleave', release);
+    // ── URL에서 방 코드 읽기 → 자동 입장 ──
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlRoom = urlParams.get('room');
+    if (urlRoom) {
+      document.getElementById('room-input').value = urlRoom.toUpperCase();
+      setTimeout(() => window.joinRoom(), 300);
+    } else {
+      show('s-lobby');
     }
 
-    // ── 게임 전체 흐름 관리 ──
-    function startP1() {
-      p1t = null; p2t = null;
+    // ── Player 1 게임 시작 ──
+    function startP1Game() {
       show('s-p1-play');
-      initHold('hb1', 'wf1', 'pf1', 'tm1', t => {
+      initHold('hb1', 'wf1', 'pf1', 'tm1', async (t) => {
         p1t = t;
         const r = judge(t);
         triggerSoundByGrade(r.sfx);
-        document.getElementById('re1').textContent = r.emoji;
-        document.getElementById('rt1').textContent = t.toFixed(3);
-        document.getElementById('rd1').innerHTML = `목표 3.000초와 <strong class="text-[#2ac1bc]">±${Math.abs(t - TARGET).toFixed(3)}초</strong> 차이`;
-        document.getElementById('rc1').textContent = `"${r.text}"`;
-        show('s-p1-result');
+
+        // Firebase에 P1 결과 저장
+        await update(roomRef, { p1t: t, state: 'p2_turn' });
+
+        // P1 대기 화면
+        document.getElementById('re1-wait').textContent = r.emoji;
+        document.getElementById('rt1-wait').textContent = t.toFixed(3) + '초';
+        show('s-p1-wait');
+
+        // P2 완료 대기
+        onValue(roomRef, (snap) => {
+          const d = snap.val();
+          if (d && d.p2t !== null && d.p2t !== undefined) {
+            p2t = d.p2t;
+            showFinal();
+          }
+        });
       });
     }
 
-    function startP2() {
-      document.getElementById('p1ref-val').textContent = p1t.toFixed(3) + '초';
-      show('s-p2-play');
-      initHold('hb2', 'wf2', 'pf2', 'tm2', t => {
-        p2t = t;
-        const r2 = judge(t);
-        triggerSoundByGrade(r2.sfx);
-        document.getElementById('re2').textContent = r2.emoji;
-        document.getElementById('rt2').textContent = t.toFixed(3);
-        document.getElementById('rd2').innerHTML = `목표 3.000초와 <strong class="text-[#2ac1bc]">±${Math.abs(t - TARGET).toFixed(3)}초</strong> 차이`;
-        document.getElementById('rc2').textContent = `"${r2.text}"`;
-        show('s-p2-result');
-      });
+    // ── Player 2 리스너 (P1 결과 기다림) ──
+    function startP2Listener() {
+      show('s-waiting');
+      document.getElementById('display-room-code').textContent = roomCode;
+      document.getElementById('my-role-display').textContent = '나는 Player 2';
+
+      onValue(roomRef, (snap) => {
+        const d = snap.val();
+        if (d && d.state === 'p2_turn' && d.p1t !== null) {
+          p1t = d.p1t;
+          document.getElementById('p1ref-val').textContent = p1t.toFixed(3) + '초';
+          show('s-p2-play');
+          initHold('hb2', 'wf2', 'pf2', 'tm2', async (t) => {
+            p2t = t;
+            await update(roomRef, { p2t: t, state: 'done' });
+            showFinal();
+          });
+        }
+      }, { onlyOnce: false });
     }
 
-    // ── STREAMING_CHUNK: Rendering final comparison metrics ──
+    // ── 최종 결과 ──
     function showFinal() {
       const d1 = Math.abs(p1t - TARGET);
       const d2 = Math.abs(p2t - TARGET);
-
-      tied = d1.toFixed(3) === d2.toFixed(3);
+      const tied = d1.toFixed(3) === d2.toFixed(3);
 
       document.getElementById('ft1').textContent = p1t.toFixed(3) + 's';
       document.getElementById('ft2').textContent = p2t.toFixed(3) + 's';
@@ -833,35 +475,191 @@
 
       if (tied) {
         wEl.textContent = '🤝 기적적인 동률 발생!';
-        sEl.textContent = `소수점 3자리까지 똑같다니, 이건 운명의 데스티니! 두 분 다 첫 주자로 공동 낙점될 위기입니다.`;
+        sEl.textContent = '소수점 3자리까지 똑같다니, 이건 운명의 데스티니! 두 분 다 첫 주자로 공동 낙점될 위기입니다.';
       } else if (d1 < d2) {
-        // Player 2의 오차가 더 크므로 패배자(첫 마이크 스타터)로 돋보이게 스왑 강조
         c2.className = 'ranking-card col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between victory';
         cr2.innerHTML = '<span class="pcrown badge-first">🎙️ 첫 주자</span>';
         cr1.innerHTML = '<span class="pcrown badge-safe">🎉 SAFE</span>';
-
         wEl.textContent = '첫 마이크 주인공 낙점!';
         sEl.textContent = '오늘 세션의 첫 마이크는 Player 2가 가져갑니다! 🎙️';
       } else {
-        // Player 1의 오차가 더 큼
         c1.className = 'ranking-card col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between victory';
         cr1.innerHTML = '<span class="pcrown badge-first">🎙️ 첫 주자</span>';
         cr2.innerHTML = '<span class="pcrown badge-safe">🎉 SAFE</span>';
-
         wEl.textContent = '첫 마이크 주인공 낙점!';
         sEl.textContent = '오늘 세션의 첫 마이크는 Player 1이 가져갑니다! 🎙️';
       }
 
+      playVictoryFanfare();
       show('s-final');
     }
 
-    function restart() {
+    // ── 재시작 ──
+    window.restart = async function() {
       playTap();
-      show('s-welcome');
+      if (roomRef) await remove(roomRef);
+      myRole = null; roomCode = null; roomRef = null; p1t = null; p2t = null;
+      document.getElementById('room-input').value = '';
+      show('s-lobby');
+    };
+
+    // ── 판정 ──
+    function judge(t) {
+      const d = Math.abs(t - TARGET);
+      if (d <= 0.05) return { emoji: "🎯", text: "AI도 울고 갈 칼타이밍!", sfx: "victory" };
+      if (d <= 0.20) return { emoji: "✨", text: "귀에 착 감기는 완벽한 타이밍!", sfx: "victory" };
+      if (d <= 0.50) return { emoji: "👍", text: "좋은 스타트입니다!", sfx: null };
+      if (t < TARGET) {
+        if (t < 2.0) return { emoji: "🔮", text: "이것은 동시통역인가, 미래를 보는 예언인가!", sfx: "mystic" };
+        return { emoji: "⚡", text: "연사님의 숨소리까지 통역할 기세시군요!", sfx: null };
+      } else {
+        if (t > 4.2) return { emoji: "☕", text: "연사님이 물 한 모금 마실 시간까지 챙겨주는 배려심!", sfx: "peaceful" };
+        return { emoji: "🧘", text: "더 완벽한 표현을 고르기 위한 깊은 고뇌의 시간!", sfx: null };
+      }
     }
 
-    // 모바일 롱터치 컨텍스트 차단
+    // ── 오디오 ──
+    let _actx = null, _tensionOsc = null, _tensionGain = null;
+    function getACtx() {
+      if (!_actx) { try { _actx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} }
+      if (_actx && _actx.state === 'suspended') _actx.resume().catch(() => {});
+      return _actx;
+    }
+    function playTap() {
+      const ctx = getACtx(); if (!ctx) return;
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine'; osc.frequency.value = 580;
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.12);
+    }
+    function startTensionSound() {
+      const ctx = getACtx(); if (!ctx) return;
+      try {
+        _tensionOsc = ctx.createOscillator(); _tensionGain = ctx.createGain();
+        _tensionOsc.connect(_tensionGain); _tensionGain.connect(ctx.destination);
+        _tensionOsc.type = 'triangle';
+        _tensionOsc.frequency.setValueAtTime(180, ctx.currentTime);
+        _tensionOsc.frequency.linearRampToValueAtTime(600, ctx.currentTime + 3.0);
+        _tensionOsc.frequency.linearRampToValueAtTime(1000, ctx.currentTime + 6.0);
+        _tensionGain.gain.setValueAtTime(0, ctx.currentTime);
+        _tensionGain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.1);
+        _tensionOsc.start(ctx.currentTime);
+      } catch(e) {}
+    }
+    function stopTensionSound() {
+      if (_tensionOsc) {
+        try {
+          _tensionGain.gain.cancelScheduledValues(_actx.currentTime);
+          _tensionGain.gain.setValueAtTime(_tensionGain.gain.value, _actx.currentTime);
+          _tensionGain.gain.exponentialRampToValueAtTime(0.001, _actx.currentTime + 0.05);
+          _tensionOsc.stop(_actx.currentTime + 0.06);
+        } catch(e) {}
+        _tensionOsc = null; _tensionGain = null;
+      }
+    }
+    function triggerSoundByGrade(sfx) {
+      if (sfx === 'victory') playVictoryFanfare();
+      if (sfx === 'mystic') playMystic();
+      if (sfx === 'peaceful') playPeaceful();
+    }
+    function playMystic() {
+      const ctx = getACtx(); if (!ctx) return;
+      [261.6,311.1,370.0,466.2,554.4,622.3,740.0].forEach((freq,i) => {
+        const osc = ctx.createOscillator(), gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine'; osc.frequency.value = freq;
+        const t = ctx.currentTime + i * 0.11;
+        gain.gain.setValueAtTime(0,t); gain.gain.linearRampToValueAtTime(0.12,t+0.05); gain.gain.exponentialRampToValueAtTime(0.001,t+0.45);
+        osc.start(t); osc.stop(t+0.45);
+      });
+    }
+    function playPeaceful() {
+      const ctx = getACtx(); if (!ctx) return;
+      [261.6,329.6,392.0,523.3].forEach((freq,i) => {
+        const osc = ctx.createOscillator(), gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine'; osc.frequency.value = freq;
+        const delay = i * 0.15;
+        gain.gain.setValueAtTime(0,ctx.currentTime+delay); gain.gain.linearRampToValueAtTime(0.1,ctx.currentTime+delay+0.2); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+2.0);
+        osc.start(ctx.currentTime+delay); osc.stop(ctx.currentTime+delay+2.0);
+      });
+    }
+    function playVictoryFanfare() {
+      const ctx = getACtx(); if (!ctx) return;
+      [523.25,659.25,783.99,1046.50].forEach((freq,i) => {
+        const osc = ctx.createOscillator(), gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine'; osc.frequency.value = freq;
+        const t = ctx.currentTime + i * 0.08;
+        gain.gain.setValueAtTime(0,t); gain.gain.linearRampToValueAtTime(0.1,t+0.04); gain.gain.exponentialRampToValueAtTime(0.001,t+0.4);
+        osc.start(t); osc.stop(t+0.4);
+      });
+    }
+
+    // ── 버튼 홀드 엔진 ──
+    function initHold(btnId, wfId, pfId, tmId, onDone) {
+      const btn = document.getElementById(btnId);
+      const wf = document.getElementById(wfId);
+      const pf = document.getElementById(pfId);
+      const tm = document.getElementById(tmId);
+      btn.classList.remove('active'); wf.classList.remove('playing');
+      pf.style.width = '0%'; tm.textContent = '0.000';
+      tm.className = "timer text-6xl font-black";
+      const bars = wf.querySelectorAll('.spectrum-bar');
+      let t0 = null, raf = null, done = false;
+
+      function start(e) {
+        if (e.cancelable) e.preventDefault();
+        if (t0 !== null || done) return;
+        getACtx(); playTap(); startTensionSound();
+        t0 = performance.now();
+        btn.classList.add('active'); wf.classList.add('playing');
+        (function tick() {
+          const el = (performance.now() - t0) / 1000;
+          tm.textContent = el.toFixed(3);
+          pf.style.width = Math.min(el / MAX * 100, 100) + '%';
+          if (el >= 3.6) tm.className = "timer text-6xl font-black text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)] mt-2 animate-pulse";
+          else if (el >= 2.6) tm.className = "timer text-6xl font-black text-[#2ac1bc] shadow-[0_0_15px_rgba(42,193,188,0.5)] mt-2";
+          else tm.className = "timer text-6xl font-black text-white mt-2";
+          bars.forEach(bar => { const randomH = 2 + Math.random() * 8 * Math.min(el, 2); bar.style.setProperty('--scale', randomH); });
+          if (el >= MAX) { release(null); return; }
+          raf = requestAnimationFrame(tick);
+        })();
+      }
+
+      function release(e) {
+        if (t0 === null || done) return;
+        if (e && e.cancelable) e.preventDefault();
+        done = true;
+        cancelAnimationFrame(raf); stopTensionSound(); playTap();
+        const elapsed = Math.min((performance.now() - t0) / 1000, MAX);
+        t0 = null;
+        btn.classList.remove('active'); wf.classList.remove('playing');
+        tm.textContent = elapsed.toFixed(3);
+        tm.className = "timer text-6xl font-black text-emerald-400 mt-2";
+        pf.style.width = Math.min(elapsed / MAX * 100, 100) + '%';
+        btn.removeEventListener('mousedown', start);
+        btn.removeEventListener('touchstart', start);
+        btn.removeEventListener('mouseup', release);
+        btn.removeEventListener('touchend', release);
+        btn.removeEventListener('mouseleave', release);
+        setTimeout(() => onDone(elapsed), 400);
+      }
+
+      btn.addEventListener('mousedown', start);
+      btn.addEventListener('touchstart', start, { passive: false });
+      btn.addEventListener('mouseup', release);
+      btn.addEventListener('touchend', release, { passive: false });
+      btn.addEventListener('mouseleave', release);
+    }
+
     document.addEventListener('contextmenu', e => e.preventDefault());
+
+    // 초기 화면
+    show('s-lobby');
   </script>
 </body>
 </html>
