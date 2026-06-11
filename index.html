@@ -204,6 +204,7 @@
     const db = getDatabase(initializeApp(cfg));
 
     const TARGET=3, MAX=6;
+    const urlRoom = new URLSearchParams(window.location.search).get('room');
     let role=null, rcode=null, rref=null, p1t=null, p2t=null;
 
     function show(id) {
@@ -234,11 +235,19 @@
       document.getElementById('d-room').textContent = rcode;
       document.getElementById('d-role').textContent = '나는 ' + (role==='p1' ? 'Player 1' : 'Player 2');
 
-      // 재시작 감지: state=restart 신호 받으면 양쪽 reload
+      // 재시작 감지: state=restart 신호 받으면 방 삭제 후 재입장
       onValue(rref, snap => {
         const d = snap.val();
-        if (d && d.state === "restart") setTimeout(() => location.reload(), 300);
-        if (!snap.exists()) location.reload();
+        if (d && d.state === 'restart') {
+          // P1이 먼저 재입장, P2는 1초 뒤 재입장 (타이밍 엇갈리게)
+          const delay = role === 'p1' ? 100 : 1000;
+          setTimeout(async () => {
+            try { await remove(rref); } catch(e) {}
+            role = null; rcode = null; rref = null; p1t = null; p2t = null;
+            document.getElementById('ri').value = urlRoom ? urlRoom.toUpperCase() : '';
+            window.joinRoom();
+          }, delay);
+        }
       });
 
       if (role === 'p1') {
@@ -314,10 +323,8 @@
 
     window.doRestart = async function() {
       tap();
-      // 재시작 신호 전송 → 양쪽 다 onValue에서 감지해서 reload
+      // 재시작 신호 전송 → 양쪽 다 onValue에서 감지
       if (rref) try { await update(rref, {state:"restart"}); } catch(e) {}
-      // 내 쪽은 약간 뒤에 reload (상대방 감지 시간 확보)
-      setTimeout(() => location.reload(), 500);
     };
 
     function judge(t) {
@@ -353,7 +360,6 @@
     document.addEventListener('contextmenu',e=>e.preventDefault());
 
     // 초기 진입
-    const urlRoom = new URLSearchParams(window.location.search).get('room');
     if (urlRoom) {
       document.getElementById('ri').value = urlRoom.toUpperCase();
       show('s-load');
