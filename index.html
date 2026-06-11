@@ -235,18 +235,12 @@
       document.getElementById('d-room').textContent = rcode;
       document.getElementById('d-role').textContent = '나는 ' + (role==='p1' ? 'Player 1' : 'Player 2');
 
-      // 재시작 감지: state=restart 신호 받으면 방 삭제 후 재입장
+      // 재시작 감지: 새 방 URL로 양쪽 다 이동
       onValue(rref, snap => {
         const d = snap.val();
-        if (d && d.state === 'restart') {
-          // P1이 먼저 재입장, P2는 1초 뒤 재입장 (타이밍 엇갈리게)
-          const delay = role === 'p1' ? 100 : 1000;
-          setTimeout(async () => {
-            try { await remove(rref); } catch(e) {}
-            role = null; rcode = null; rref = null; p1t = null; p2t = null;
-            document.getElementById('ri').value = urlRoom ? urlRoom.toUpperCase() : '';
-            window.joinRoom();
-          }, delay);
+        if (d && d.state === 'restart' && d.nextRoom) {
+          const newUrl = window.location.pathname + '?room=' + d.nextRoom;
+          window.location.href = newUrl;
         }
       });
 
@@ -323,8 +317,11 @@
 
     window.doRestart = async function() {
       tap();
-      // 재시작 신호 전송 → 양쪽 다 onValue에서 감지
-      if (rref) try { await update(rref, {state:"restart"}); } catch(e) {}
+      // 새 방 코드 생성 (기본 코드 + 랜덤 4자리)
+      const base = urlRoom ? urlRoom.replace(/_\d+$/, '') : rcode;
+      const newCode = base + '_' + Math.floor(1000 + Math.random() * 9000);
+      // 재시작 신호 + 새 방 코드 전송
+      if (rref) try { await update(rref, {state:'restart', nextRoom: newCode}); } catch(e) {}
     };
 
     function judge(t) {
