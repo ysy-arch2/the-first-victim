@@ -311,14 +311,11 @@
           }
         }
 
-        // 결과 감지 — 핵심: result_p1, result_p2 둘 다 있으면 무조건 결과 표시
+        // 결과 감지 — played 여부와 무관하게 둘 다 있으면 무조건 결과 표시
         const res1 = d.result_p1;
         const res2 = d.result_p2;
         if (res1 != null && res2 != null) {
-          const finalScreen = document.getElementById('s-final');
-          if (!finalScreen.classList.contains('on')) {
-            renderFinal(res1, res2);
-          }
+          renderFinal(res1, res2);
         }
 
         // 리셋
@@ -390,6 +387,9 @@
         cr2.innerHTML = '<span class="bdg bs">🎉 SAFE</span>';
       }
 
+      // 이미 결과 화면이면 다시 렌더링 안 함
+      const finalScreen = document.getElementById('s-final');
+      if (finalScreen.classList.contains('on')) return;
       playFanfare();
       show('s-final');
     }
