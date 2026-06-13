@@ -360,6 +360,12 @@
           setTimeout(() => startGame(), 800);
         }
 
+        // 양쪽 결과 모두 나오면 최종 결과 표시
+        if (d.result_p1 != null && d.result_p2 != null && !finalShown) {
+          finalShown = true;
+          renderFinal(d.result_p1, d.result_p2);
+        }
+
         // 결과 화면에서 리셋 신호 감지
         if (d.state === 'reset') {
           finalShown = false; myResult = null; gameStarted = false;
@@ -390,15 +396,8 @@
         // 집계 화면
         document.getElementById('my-record').textContent = t.toFixed(3) + '초';
         show('s-wait-result');
-
-        // 세션 전체를 감지해서 양쪽 결과 모두 나오면 최종 결과 표시
-        onValue(sessionRef, snap => {
-          const d = snap.val() || {};
-          if (d.result_p1 != null && d.result_p2 != null && !finalShown) {
-            finalShown = true;
-            renderFinal(d.result_p1, d.result_p2);
-          }
-        });
+        // listenReady의 onValue가 이미 sessionRef 전체를 감지하고 있으므로
+        // 거기서 result_p1/result_p2 둘 다 있으면 renderFinal 호출됨
       });
     }
 
