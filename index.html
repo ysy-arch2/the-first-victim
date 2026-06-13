@@ -339,7 +339,16 @@
         show('s-waiting');
         const myResultRef = ref(db, 'session/result_' + myRole);
         await set(myResultRef, t);
-        // onValue가 result_p1, result_p2 둘 다 감지하면 자동으로 renderFinal 호출됨
+
+        // 저장 후 직접 체크 — onValue가 놓쳤을 경우 대비
+        const snap = await get(sRef);
+        const d = snap.val() || {};
+        if (d.result_p1 != null && d.result_p2 != null) {
+          const finalScreen = document.getElementById('s-final');
+          if (!finalScreen.classList.contains('on')) {
+            renderFinal(d.result_p1, d.result_p2);
+          }
+        }
       });
     }
 
