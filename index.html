@@ -153,16 +153,7 @@
     <div class="text-6xl font-black text-slate-600 select-none text-center" id="tm">0.000</div>
   </div>
 
-  <!-- 결과 집계 중 -->
-  <div class="scr flex-col items-center justify-center w-full max-w-md z-10 text-center" id="s-waiting">
-    <div class="text-6xl mb-4 wp">⏳</div>
-    <h2 class="text-xl font-black mb-2">결과 집계 중...</h2>
-    <p class="text-sm text-slate-400 mb-4">상대방의 플레이가 끝날 때까지 대기 중</p>
-    <div class="vc w-full p-5">
-      <p class="text-xs text-slate-400 mb-1">내 기록</p>
-      <p class="text-4xl font-black text-[#2ac1bc]" id="my-record">0.000초</p>
-    </div>
-  </div>
+
 
   <!-- 최종 결과 -->
   <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-final">
@@ -324,6 +315,8 @@
           show('s-ready');
           const btn = document.getElementById('ready-btn');
           btn.disabled = false; btn.textContent = '✅ READY!';
+          // reset 상태 지우기 (다음 게임 시작 조건 방해 안 하도록)
+          update(sRef, {state: null}).catch(()=>{});
         }
       });
     };
@@ -332,8 +325,6 @@
     function startPlay() {
       initHold(async t => {
         played = true;
-        document.getElementById('my-record').textContent = t.toFixed(3) + '초';
-        show('s-waiting');
         const myResultRef = ref(db, 'session/result_' + myRole);
         await set(myResultRef, t);
 
