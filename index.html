@@ -292,14 +292,11 @@
           btn.disabled = true; btn.textContent = '✅ 준비 완료!';
         }
 
-        // 둘 다 레디 → 게임 시작
-        if (r1 && r2 && !played) {
-          // 현재 화면이 s-ready일 때만 시작
-          const readyScreen = document.getElementById('s-ready');
-          if (readyScreen.classList.contains('on')) {
-            show('s-play');
-            startPlay();
-          }
+        // 둘 다 레디 → 게임 시작 (화면 조건 제거)
+        if (r1 && r2 && !played && d.state !== 'reset') {
+          played = true;
+          show('s-play');
+          startPlay();
         }
 
         // 결과 감지 — played 여부와 무관하게 둘 다 있으면 무조건 결과 표시
@@ -312,10 +309,16 @@
         // 리셋
         if (d.state === 'reset') {
           played = false;
+          // ready UI 초기화
+          document.getElementById('ready-p1-text').textContent = '대기 중...';
+          document.getElementById('ready-p2-text').textContent = '대기 중...';
+          document.getElementById('ready-p1-icon').textContent = '⏳';
+          document.getElementById('ready-p2-icon').textContent = '⏳';
+          document.getElementById('ready-row-p1').classList.remove('done');
+          document.getElementById('ready-row-p2').classList.remove('done');
           show('s-ready');
           const btn = document.getElementById('ready-btn');
           btn.disabled = false; btn.textContent = '✅ READY!';
-          // reset 상태 지우기 (다음 게임 시작 조건 방해 안 하도록)
           update(sRef, {state: null}).catch(()=>{});
         }
       });
@@ -389,15 +392,20 @@
     window.doRestart = async function() {
       tap();
       played = false;
+      // ready, result, state 모두 초기화
       await update(sRef, {
         ready_p1: null, ready_p2: null,
         result_p1: null, result_p2: null,
         state: 'reset'
       });
+      // 리스너가 reset 감지 후 null로 지움 — 여기서도 바로 처리
       show('s-ready');
       const btn = document.getElementById('ready-btn');
       btn.disabled = false; btn.textContent = '✅ READY!';
     };
+
+    // ── Ready 버튼 ──
+    // (아래 setReady는 그대로)
 
     // ── Ready 버튼 ──
     window.setReady = async function() {
