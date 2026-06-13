@@ -329,30 +329,30 @@
       document.getElementById('play-role-badge').innerHTML =
         `<span class="w-2.5 h-2.5 rounded-full bg-[#2ac1bc] animate-pulse"></span>${role === 'p1' ? '첫 번째 이름' : '두 번째 이름'}`;
       show('s-ready');
-      listenReady();
+      startSessionListener();
     };
 
-    // ── Ready 리스너 ──
-    function listenReady() {
+    // ── 메인 세션 리스너 (역할 선택 후 한 번만 등록) ──
+    function startSessionListener() {
       onValue(sessionRef, snap => {
         const d = snap.val() || {};
         const r1 = d.ready_p1 === true;
         const r2 = d.ready_p2 === true;
 
-        // UI 업데이트
+        // Ready UI 업데이트
         const row1 = document.getElementById('ready-row-p1');
         const row2 = document.getElementById('ready-row-p2');
-        document.getElementById('ready-p1-text').textContent = r1 ? '준비 완료 ✅' : '대기 중...';
-        document.getElementById('ready-p2-text').textContent = r2 ? '준비 완료 ✅' : '대기 중...';
-        document.getElementById('ready-p1-icon').textContent = r1 ? '✅' : '⏳';
-        document.getElementById('ready-p2-icon').textContent = r2 ? '✅' : '⏳';
-        if (r1) row1.classList.add('done'); else row1.classList.remove('done');
-        if (r2) row2.classList.add('done'); else row2.classList.remove('done');
-
-        // 내가 레디한 경우 버튼 비활성화
-        const myReady = myRole === 'p1' ? r1 : r2;
-        const btn = document.getElementById('ready-btn');
-        if (myReady) { btn.disabled = true; btn.textContent = '✅ 준비 완료!'; }
+        if (row1 && row2) {
+          document.getElementById('ready-p1-text').textContent = r1 ? '준비 완료 ✅' : '대기 중...';
+          document.getElementById('ready-p2-text').textContent = r2 ? '준비 완료 ✅' : '대기 중...';
+          document.getElementById('ready-p1-icon').textContent = r1 ? '✅' : '⏳';
+          document.getElementById('ready-p2-icon').textContent = r2 ? '✅' : '⏳';
+          if (r1) row1.classList.add('done'); else row1.classList.remove('done');
+          if (r2) row2.classList.add('done'); else row2.classList.remove('done');
+          const myReady = myRole === 'p1' ? r1 : r2;
+          const btn = document.getElementById('ready-btn');
+          if (btn && myReady) { btn.disabled = true; btn.textContent = '✅ 준비 완료!'; }
+        }
 
         // 둘 다 레디면 게임 시작
         if (r1 && r2 && !gameStarted) {
@@ -364,15 +364,14 @@
         if (d.result_p1 != null && d.result_p2 != null && !finalShown) {
           finalShown = true;
           renderFinal(d.result_p1, d.result_p2);
+          return;
         }
 
-        // 결과 화면에서 리셋 신호 감지
-        if (d.state === 'reset') {
-          finalShown = false; myResult = null; gameStarted = false;
+        // 리셋 신호 감지
+        if (d.state === 'reset' && finalShown === false && gameStarted === false) {
           show('s-ready');
-          // 레디 버튼 초기화
           const btn = document.getElementById('ready-btn');
-          btn.disabled = false; btn.textContent = '✅ READY!';
+          if (btn) { btn.disabled = false; btn.textContent = '✅ READY!'; }
         }
       });
     }
