@@ -10,9 +10,9 @@
     @font-face { font-family:'NexonMaplestory'; src:url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NexonMaplestoryBold.woff') format('woff'); }
     :root { --mint:#2ac1bc; }
     * { font-family:'NexonMaplestory','Nanum Square Round',sans-serif !important; }
-    body { background:linear-gradient(135deg,#000 0%,#0c1211 50%,#020202 100%); color:#fff; overflow-x:hidden; }
-    .ga{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(42,193,188,.22) 0%,transparent 70%);top:-10%;left:-10%;filter:blur(60px);pointer-events:none;z-index:1;animation:fa 12s ease-in-out infinite alternate;}
-    .gb{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(42,193,188,.12) 0%,transparent 70%);bottom:-15%;right:-10%;filter:blur(70px);pointer-events:none;z-index:1;animation:fb 15s ease-in-out infinite alternate;}
+    body { background:linear-gradient(135deg,#000 0%,#0c1211 50%,#020202 100%); color:#fff; overflow-x:hidden; min-height:100vh; }
+    .ga{position:fixed;width:500px;height:500px;background:radial-gradient(circle,rgba(42,193,188,.22) 0%,transparent 70%);top:-10%;left:-10%;filter:blur(60px);pointer-events:none;z-index:0;animation:fa 12s ease-in-out infinite alternate;}
+    .gb{position:fixed;width:500px;height:500px;background:radial-gradient(circle,rgba(42,193,188,.12) 0%,transparent 70%);bottom:-15%;right:-10%;filter:blur(70px);pointer-events:none;z-index:0;animation:fb 15s ease-in-out infinite alternate;}
     @keyframes fa{0%{transform:translateY(0) scale(1)}100%{transform:translateY(40px) scale(1.15)}}
     @keyframes fb{0%{transform:translateY(0) scale(1.1)}100%{transform:translateY(-50px) scale(.9)}}
     .vc{background:rgba(12,18,17,.75);border:3px solid var(--mint);box-shadow:0 15px 35px rgba(0,0,0,.8),0 0 25px rgba(42,193,188,.2);border-radius:32px;backdrop-filter:blur(25px);}
@@ -20,6 +20,7 @@
     .vb{font-weight:800;border:3px solid #000;border-radius:20px;box-shadow:0 6px 0 #000,0 12px 20px rgba(0,0,0,.6);transition:all .15s;}
     .vb:hover{transform:translateY(-2px);}
     .vb:active{transform:translateY(4px);box-shadow:0 2px 0 #000;}
+    .vb:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:0 6px 0 #000;}
     .mo{width:150px;height:150px;background:radial-gradient(circle,#122524 0%,#030807 100%);border:4px solid #000;box-shadow:0 10px 0 #000;border-radius:50%;transition:all .1s;}
     .mi{width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#0a1110,#030505);box-shadow:inset 0 -4px 8px rgba(0,0,0,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;border:2px dashed rgba(42,193,188,.15);}
     .mo.on{transform:translateY(6px);box-shadow:0 3px 0 #000;}
@@ -36,55 +37,111 @@
     .bf{background:#ff4b55;color:#fff;}
     .wp{animation:wpls 1.5s ease-in-out infinite;}
     @keyframes wpls{0%,100%{opacity:.5}50%{opacity:1}}
+    .role-btn{background:rgba(12,18,17,.8);border:3px solid rgba(42,193,188,.4);border-radius:24px;padding:20px;cursor:pointer;transition:all .2s;width:100%;}
+    .role-btn:hover{border-color:var(--mint);background:rgba(42,193,188,.1);transform:translateY(-2px);}
+    .role-btn.taken{opacity:.35;cursor:not-allowed;transform:none;}
+    .role-btn.mine{border-color:var(--mint);background:rgba(42,193,188,.15);box-shadow:0 0 20px rgba(42,193,188,.3);}
+    .ready-row{display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.4);border-radius:16px;padding:12px 16px;border:1.5px solid rgba(255,255,255,.08);}
+    .ready-row.done{border-color:var(--mint);background:rgba(42,193,188,.08);}
+    .lose-pop{animation:losePop .5s cubic-bezier(.175,.885,.32,1.275) forwards;}
+    @keyframes losePop{0%{transform:scale(0.3);opacity:0}100%{transform:scale(1);opacity:1}}
+    .reveal-anim{animation:revealSlide .6s ease-out forwards;}
+    @keyframes revealSlide{0%{transform:translateY(-20px);opacity:0}100%{transform:translateY(0);opacity:1}}
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen relative p-4 py-16 select-none">
+<body class="flex items-center justify-center relative p-4 py-16 select-none">
   <div class="ga"></div><div class="gb"></div>
 
+  <!-- 로딩 -->
   <div class="scr on flex-col items-center justify-center w-full max-w-md z-10" id="s-load">
     <div class="text-4xl mb-4 wp">🎙️</div>
     <p class="text-sm font-bold text-slate-400 tracking-widest">연결 중...</p>
   </div>
 
-  <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-lobby">
-    <div class="mb-6 text-center">
-      <h1 class="vt text-4xl sm:text-5xl text-[#2ac1bc]">THE FIRST VICTIM</h1>
-      <p class="text-sm tracking-[5px] font-bold mt-2">운명의 마이크 🎙️</p>
+  <!-- 만석 -->
+  <div class="scr flex-col items-center justify-center w-full max-w-md z-10 text-center px-4" id="s-full">
+    <div class="text-5xl mb-4">😅</div>
+    <h1 class="vt text-3xl text-[#2ac1bc] mb-4">THE FIRST VICTIM</h1>
+    <div class="vc w-full p-6">
+      <p class="text-base font-bold text-white mb-2">현재 다른 플레이어들이 게임을 진행 중입니다.</p>
+      <p class="text-sm text-slate-400">잠시 후 다시 시도해주세요 🙏</p>
     </div>
-    <div class="vc w-full p-6 mb-6 text-center">
-      <p class="text-base font-bold mb-4">"동시통역사는 항상 화자보다<br><span class="text-[#2ac1bc] text-lg font-black">딱 3초 뒤</span>에 살고 있다."</p>
-      <div class="bg-black/50 border-2 border-dashed border-[#2ac1bc]/30 rounded-2xl p-4 text-left">
-        <span class="text-[10px] font-extrabold tracking-[2px] text-[#2ac1bc] block mb-1">🔥 룰 설명</span>
-        <p class="text-[12px] text-slate-300">마이크 버튼을 누르고 있다가 딱 3.000초가 지났다 생각될 때 손을 놓으세요. 오차가 더 큰 분이 첫 주자!</p>
+    <button class="vb bg-slate-700 text-white w-full py-3 text-sm mt-4 font-black" onclick="location.reload()">새로고침</button>
+  </div>
+
+  <!-- 역할 선택 -->
+  <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-role">
+    <div class="mb-5 text-center">
+      <h1 class="vt text-4xl sm:text-5xl text-[#2ac1bc]">THE FIRST VICTIM</h1>
+      <p class="text-sm tracking-[3px] font-bold mt-2 text-slate-300">오늘의 첫 희생자는 누구일까요? 🎯</p>
+    </div>
+
+    <!-- 룰 설명 -->
+    <div class="w-full mb-5 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-2xl p-4">
+      <p class="text-[#2ac1bc] font-extrabold text-sm tracking-[2px] mb-3">🔥 룰 설명</p>
+      <p class="text-white font-bold text-sm leading-relaxed mb-2">마이크 버튼을 꾹 누르고 있다가 정확히 3.000초가 지났다고 생각될 때 손을 놓으세요. 👇</p>
+      <p class="text-white font-bold text-sm leading-relaxed mb-3">3초와의 오차가 더 큰 분이 오늘 세션의 첫 주자가 됩니다 😈</p>
+      <p class="text-xs text-slate-400 border-t border-white/10 pt-2">※ 결과는 두 사람 모두 플레이를 마칠 때까지 공개되지 않습니다.</p>
+    </div>
+
+    <!-- 역할 선택 버튼 -->
+    <p class="text-xs font-bold text-slate-400 mb-3 tracking-widest">배정인비 순서대로 선택하세요</p>
+    <div class="w-full flex flex-col gap-3 mb-2">
+      <button class="role-btn" id="btn-p1" onclick="selectRole('p1')">
+        <div class="flex items-center justify-between">
+          <div class="text-left">
+            <p class="text-xs text-[#2ac1bc] font-extrabold tracking-[2px] mb-1">첫 번째 이름</p>
+            <p class="text-lg font-black text-white" id="p1-status">선택 가능</p>
+          </div>
+          <div class="text-3xl" id="p1-icon">👆</div>
+        </div>
+      </button>
+      <button class="role-btn" id="btn-p2" onclick="selectRole('p2')">
+        <div class="flex items-center justify-between">
+          <div class="text-left">
+            <p class="text-xs text-[#2ac1bc] font-extrabold tracking-[2px] mb-1">두 번째 이름</p>
+            <p class="text-lg font-black text-white" id="p2-status">선택 가능</p>
+          </div>
+          <div class="text-3xl" id="p2-icon">✌️</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Ready 대기 -->
+  <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-ready">
+    <h2 class="text-xl font-black mb-1 text-center">준비 확인</h2>
+    <p class="text-xs text-slate-400 mb-5 text-center">양쪽 모두 READY가 되면 게임이 시작됩니다</p>
+    <div class="w-full flex flex-col gap-3 mb-6">
+      <div class="ready-row" id="ready-row-p1">
+        <div>
+          <p class="text-xs text-slate-400 font-bold">첫 번째 이름</p>
+          <p class="text-sm font-black text-white" id="ready-p1-text">대기 중...</p>
+        </div>
+        <div class="text-2xl" id="ready-p1-icon">⏳</div>
+      </div>
+      <div class="ready-row" id="ready-row-p2">
+        <div>
+          <p class="text-xs text-slate-400 font-bold">두 번째 이름</p>
+          <p class="text-sm font-black text-white" id="ready-p2-text">대기 중...</p>
+        </div>
+        <div class="text-2xl" id="ready-p2-icon">⏳</div>
       </div>
     </div>
-    <div class="w-full mb-4">
-      <p class="text-xs font-bold text-slate-400 mb-2 tracking-widest text-center">방 코드 입력</p>
-      <input id="ri" type="text" maxlength="10" class="w-full bg-black/60 border-2 border-[#2ac1bc]/50 focus:border-[#2ac1bc] rounded-2xl px-5 py-3 text-center text-2xl font-black text-white tracking-[8px] outline-none uppercase" placeholder="예: BAEMIN" oninput="this.value=this.value.toUpperCase()">
-    </div>
-    <button class="vb bg-[#2ac1bc] text-black w-full py-4 text-lg flex items-center justify-center font-black" onclick="joinRoom()">
-      <svg class="w-5 h-5 mr-1.5 fill-black" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>입장하기
+    <button class="vb bg-[#2ac1bc] text-black w-full py-4 text-lg font-black" id="ready-btn" onclick="setReady()">
+      ✅ READY!
     </button>
+    <p class="text-xs text-slate-500 mt-3 text-center" id="ready-hint">준비가 되면 READY 버튼을 눌러주세요</p>
   </div>
 
-  <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-wait">
-    <div class="text-6xl mb-6 wp">⏳</div>
-    <h2 class="text-2xl font-black mb-2 text-center">상대방을 기다리는 중...</h2>
-    <p class="text-sm text-slate-400 mb-6 text-center">같은 방 코드로 접속하면 게임이 시작됩니다</p>
-    <div class="vc w-full p-4 text-center mb-4">
-      <p class="text-xs text-slate-400 mb-1">방 코드</p>
-      <p class="text-3xl font-black text-[#2ac1bc] tracking-[8px]" id="d-room">------</p>
+  <!-- 플레이 화면 -->
+  <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-play">
+    <div class="inline-flex items-center gap-2 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-full px-5 py-1.5 text-xs font-bold tracking-[2.5px] text-[#2ac1bc] mb-3" id="play-role-badge">
+      <span class="w-2.5 h-2.5 rounded-full bg-[#2ac1bc] animate-pulse"></span>첫 번째 이름
     </div>
-    <p class="text-xs text-slate-500" id="d-role"></p>
-  </div>
-
-  <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-p1">
-    <div class="inline-flex items-center gap-2 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-full px-5 py-1.5 text-xs font-bold tracking-[2.5px] text-[#2ac1bc] mb-4">
-      <span class="w-2.5 h-2.5 rounded-full bg-[#2ac1bc] animate-pulse"></span>PLAYER 1
-    </div>
-    <h2 class="text-2xl font-bold mb-1 text-center">마이크를 지긋이 누르세요</h2>
+    <h2 class="text-2xl font-bold mb-1 text-center">꾸~욱 눌러주세요</h2>
     <p class="text-xs text-slate-400 mb-4 text-center">3.000초 시점에 전광석화처럼 떼세요</p>
-    <div class="sw flex items-center justify-center gap-1.5 h-10 mb-4" id="wf1">
+    <div class="sw flex items-center justify-center gap-1.5 h-10 mb-4" id="wf">
       <div class="sb" style="--s:3"></div><div class="sb" style="--s:5.5"></div><div class="sb" style="--s:4"></div>
       <div class="sb" style="--s:7"></div><div class="sb" style="--s:3.5"></div><div class="sb" style="--s:6"></div>
       <div class="sb" style="--s:4.5"></div><div class="sb" style="--s:8"></div><div class="sb" style="--s:4"></div>
@@ -93,92 +150,72 @@
     <div class="w-full max-w-xs mb-5">
       <div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1.5"><span>0.0s</span><span class="text-[#2ac1bc]">TARGET: 3.000s</span><span>6.0s</span></div>
       <div class="relative h-2 bg-black/50 border border-white/10 rounded-full overflow-visible">
-        <div class="h-full bg-gradient-to-r from-[#2ac1bc] to-white rounded-full" id="pf1" style="width:0%"></div>
+        <div class="h-full bg-gradient-to-r from-[#2ac1bc] to-white rounded-full" id="pf" style="width:0%"></div>
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-5 bg-[#2ac1bc] rounded-sm"></div>
       </div>
     </div>
     <div class="flex justify-center mb-4">
-      <div class="mo" id="hb1"><div class="mi">
+      <div class="mo" id="hb"><div class="mi">
         <svg class="w-9 h-9 text-white/40" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
         <span class="text-[11px] font-bold opacity-70 mt-1">꾹 누르기</span>
       </div></div>
     </div>
-    <div class="text-6xl font-black text-slate-600 select-none text-center" id="tm1">0.000</div>
+    <div class="text-6xl font-black text-slate-600 select-none text-center" id="tm">0.000</div>
   </div>
 
-  <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-p1w">
-    <div class="text-7xl mb-4 animate-bounce" id="re1">🎯</div>
-    <p class="text-sm font-bold text-[#2ac1bc] mb-1">내 기록</p>
-    <p class="text-5xl font-black mb-6" id="rt1">0.000초</p>
-    <div class="vc w-full p-5 text-center">
-      <div class="text-2xl mb-2 wp">⏳</div>
-      <p class="text-sm font-bold text-slate-300">상대방 플레이 중...</p>
+  <!-- 결과 집계 중 -->
+  <div class="scr flex-col items-center justify-center w-full max-w-md z-10 text-center" id="s-wait-result">
+    <div class="text-6xl mb-4 wp">⏳</div>
+    <h2 class="text-xl font-black mb-2">결과 집계 중...</h2>
+    <p class="text-sm text-slate-400 mb-4">상대방의 플레이가 끝날 때까지 대기 중</p>
+    <div class="vc w-full p-5">
+      <p class="text-xs text-slate-400 mb-1">내 기록</p>
+      <p class="text-4xl font-black text-[#2ac1bc]" id="my-record">0.000초</p>
     </div>
   </div>
 
-  <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-p2">
-    <div class="inline-flex items-center gap-2 bg-[#2ac1bc]/10 border-2 border-[#2ac1bc] rounded-full px-5 py-1.5 text-xs font-bold tracking-[2.5px] text-[#2ac1bc] mb-3">
-      <span class="w-2.5 h-2.5 rounded-full bg-[#2ac1bc] animate-pulse"></span>PLAYER 2
-    </div>
-    <div class="bg-black/40 border border-[#2ac1bc]/20 rounded-xl px-4 py-2 text-xs text-slate-300 font-medium mb-4 flex items-center gap-2">
-      🔥 Player 1 기록: <strong class="text-[#2ac1bc]" id="p1ref">0.000초</strong>
-    </div>
-    <h2 class="text-2xl font-bold mb-1 text-center">마이크를 지긋이 누르세요</h2>
-    <p class="text-xs text-slate-400 mb-4 text-center">3.000초 시점에 전광석화처럼 떼세요</p>
-    <div class="sw flex items-center justify-center gap-1.5 h-10 mb-4" id="wf2">
-      <div class="sb" style="--s:4"></div><div class="sb" style="--s:3.5"></div><div class="sb" style="--s:6"></div>
-      <div class="sb" style="--s:5.5"></div><div class="sb" style="--s:8"></div><div class="sb" style="--s:4.5"></div>
-      <div class="sb" style="--s:7"></div><div class="sb" style="--s:3.5"></div><div class="sb" style="--s:5"></div>
-      <div class="sb" style="--s:3"></div><div class="sb" style="--s:4"></div>
-    </div>
-    <div class="w-full max-w-xs mb-5">
-      <div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1.5"><span>0.0s</span><span class="text-[#2ac1bc]">TARGET: 3.000s</span><span>6.0s</span></div>
-      <div class="relative h-2 bg-black/50 border border-white/10 rounded-full overflow-visible">
-        <div class="h-full bg-gradient-to-r from-white to-[#2ac1bc] rounded-full" id="pf2" style="width:0%"></div>
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-5 bg-[#2ac1bc] rounded-sm"></div>
-      </div>
-    </div>
-    <div class="flex justify-center mb-4">
-      <div class="mo" id="hb2"><div class="mi">
-        <svg class="w-9 h-9 text-white/40" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
-        <span class="text-[11px] font-bold opacity-70 mt-1">꾹 누르기</span>
-      </div></div>
-    </div>
-    <div class="text-6xl font-black text-slate-600 select-none text-center" id="tm2">0.000</div>
-  </div>
-
+  <!-- 최종 결과 -->
   <div class="scr flex-col items-center justify-center w-full max-w-md z-10" id="s-final">
-    <div class="inline-block bg-[#2ac1bc] text-black font-extrabold text-[10px] px-4 py-1 rounded-full uppercase tracking-[2px] mb-6">🏆 최종 결과</div>
-    <div class="grid grid-cols-5 gap-3 w-full max-w-md mb-8 items-center">
+    <div class="inline-block bg-[#2ac1bc] text-black font-extrabold text-[10px] px-4 py-1 rounded-full uppercase tracking-[2px] mb-4">🏆 최종 결과</div>
+
+    <!-- 첫 희생자 발표 배너 -->
+    <div class="lose-pop w-full mb-5 rounded-3xl p-5 text-center" id="lose-banner" style="background:linear-gradient(135deg,#ff4b55,#c0392b);border:3px solid #ff6b6b;box-shadow:0 0 40px rgba(255,75,85,.5);">
+      <p class="text-white/80 font-extrabold text-xs tracking-[3px] mb-1">오늘의 첫 희생자는...</p>
+      <p class="text-white font-black text-3xl mb-1" id="victim-name">?</p>
+      <p class="text-white font-black text-xl mb-1">🎙️ YOU LOSE!</p>
+      <p class="text-white/90 font-bold text-sm">먼저 시작해주세요 😂🎤</p>
+    </div>
+
+    <div class="grid grid-cols-5 gap-3 w-full max-w-md mb-6 items-center">
       <div class="rc col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between" id="fc1">
-        <div><div class="h-11 flex items-center justify-center mb-3" id="crn1"></div>
-        <p class="text-[10px] font-extrabold tracking-[2px] text-slate-400">PLAYER 1</p>
-        <p class="text-2xl font-black mt-1" id="ft1">-</p></div>
+        <div>
+          <div class="h-11 flex items-center justify-center mb-3" id="crn1"></div>
+          <p class="text-[10px] font-extrabold tracking-[2px] text-slate-400">첫 번째 이름</p>
+          <p class="text-2xl font-black mt-1" id="ft1">-</p>
+        </div>
         <p class="text-[11px] text-slate-400 font-semibold mt-3" id="fd1">-</p>
       </div>
       <div class="col-span-1 flex items-center justify-center"><span class="font-black text-xl italic text-slate-500">VS</span></div>
       <div class="rc col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between" id="fc2">
-        <div><div class="h-11 flex items-center justify-center mb-3" id="crn2"></div>
-        <p class="text-[10px] font-extrabold tracking-[2px] text-slate-400">PLAYER 2</p>
-        <p class="text-2xl font-black mt-1" id="ft2">-</p></div>
+        <div>
+          <div class="h-11 flex items-center justify-center mb-3" id="crn2"></div>
+          <p class="text-[10px] font-extrabold tracking-[2px] text-slate-400">두 번째 이름</p>
+          <p class="text-2xl font-black mt-1" id="ft2">-</p>
+        </div>
         <p class="text-[11px] text-slate-400 font-semibold mt-3" id="fd2">-</p>
       </div>
     </div>
-    <div class="vc w-full p-8 mb-8 text-center relative">
-      <div class="absolute -right-6 -top-6 text-7xl opacity-15 rotate-12">🎙️</div>
-      <h2 class="text-xl font-bold mb-2" id="fw">-</h2>
-      <p class="text-sm text-slate-300 font-semibold" id="fs"></p>
-    </div>
+
     <button class="vb bg-[#2ac1bc] text-black w-full py-4 text-base flex items-center justify-center font-black" onclick="doRestart()">
       <svg class="w-5 h-5 mr-1.5 fill-black" viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>다시 하기
     </button>
   </div>
 
-  <footer class="fixed bottom-4 text-[10px] tracking-[4px] font-extrabold text-slate-600 uppercase select-none pointer-events-none">THE FIRST VICTIM · 3초의 법칙</footer>
+  <footer class="fixed bottom-4 text-[10px] tracking-[4px] font-extrabold text-slate-600 uppercase select-none pointer-events-none w-full text-center z-0">THE FIRST VICTIM · 3초의 법칙</footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, runTransaction, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getDatabase, ref, set, get, update, remove, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     const db = getDatabase(initializeApp({
       apiKey:"AIzaSyArJEoLmzxRTwfrVOnq0VU_sawqAucalGc",
@@ -190,155 +227,257 @@
       appId:"1:471173360675:web:a13871b05126c95d851596"
     }));
 
-    const TARGET=3, MAX=6;
-    const urlRoom = new URLSearchParams(window.location.search).get('room');
-    let role=null, rref=null, p1t=null, p2t=null, finalShown=false;
+    const TARGET = 3, MAX = 6;
+    const sessionRef = ref(db, 'session');
+    const p1Ref = ref(db, 'session/player1');
+    const p2Ref = ref(db, 'session/player2');
+    const stateRef = ref(db, 'session/state');
+
+    let myRole = null; // 'p1' | 'p2'
+    let myResult = null;
+    let finalShown = false;
+    let gameStarted = false;
 
     function show(id) {
-      document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
-      setTimeout(()=>{ const e=document.getElementById(id); if(e) e.classList.add('on'); },50);
+      document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+      setTimeout(() => { const e = document.getElementById(id); if(e) e.classList.add('on'); }, 50);
     }
 
-    async function enterRoom(code) {
-      rref = ref(db, 'rooms/' + code);
+    // ── 초기 접속: 세션 상태 확인 후 역할 선택 ──
+    async function init() {
+      const snap = await get(sessionRef);
+      const data = snap.val() || {};
 
-      // transaction으로 P1/P2 역할 원자적 결정
-      let myRole = null;
-      try {
-        const result = await runTransaction(rref, (current) => {
-          if (current === null) {
-            // 방 없음 → P1으로 생성
-            return { state:'waiting', p1t:null, p2t:null };
-          } else if (current.state === 'waiting') {
-            // 대기 중 → P2로 입장
-            return { ...current, state:'playing' };
-          } else {
-            // 진행 중인 방 → 중단
-            return undefined; // abort transaction
+      // 리셋 상태이거나 비어있으면 역할 선택 화면
+      const p1taken = data.player1 === true;
+      const p2taken = data.player2 === true;
+
+      if (p1taken && p2taken && data.state !== 'idle' && data.state !== 'reset') {
+        // 둘 다 있고 게임 진행 중
+        show('s-full');
+        // 주기적으로 확인해서 빈 자리 생기면 자동 갱신
+        onValue(sessionRef, snap => {
+          const d = snap.val() || {};
+          if (!d.player1 || !d.player2 || d.state === 'idle' || d.state === 'reset') {
+            location.reload();
           }
         });
-
-        if (!result.committed) {
-          alert('이미 진행 중인 방이에요. 잠시 후 다시 시도해주세요!');
-          show('s-lobby');
-          return;
-        }
-
-        // transaction 후 실제 데이터로 역할 판단
-        const val = result.snapshot.val();
-        myRole = (val && val.state === 'waiting') ? 'p1' : 'p2';
-        role = myRole;
-
-      } catch(e) {
-        alert('연결 오류가 발생했어요. 다시 시도해주세요.');
-        show('s-lobby');
         return;
       }
 
-      document.getElementById('d-room').textContent = code;
-      document.getElementById('d-role').textContent = '나는 ' + (role==='p1' ? 'Player 1' : 'Player 2');
-      show('s-wait');
+      updateRoleBtns(data);
+      show('s-role');
 
-      // 메인 상태 리스너
-      onValue(rref, snap => {
-        const d = snap.val();
-        if (!d) return;
-
-        // 재시작 신호
-        if (d.state === 'restart' && d.nextRoom) {
-          window.location.replace(window.location.pathname + '?room=' + d.nextRoom);
-          return;
-        }
-
-        if (role === 'p1') {
-          if (d.state === 'playing') startP1();
-          if (d.state === 'done' && d.p2t != null && !finalShown) {
-            finalShown = true;
-            p2t = d.p2t;
-            renderFinal(p1t, p2t);
-          }
-        } else {
-          if (d.state === 'p2_turn' && d.p1t != null && p2t === null) {
-            p1t = d.p1t;
-            document.getElementById('p1ref').textContent = p1t.toFixed(3)+'초';
-            show('s-p2');
-            initHold('hb2','wf2','pf2','tm2', async t => {
-              p2t = t;
-              await update(rref, {p2t:t, state:'done'});
-              if (!finalShown) { finalShown=true; renderFinal(p1t, t); }
-            });
-          }
-        }
+      // 역할 상태 실시간 반영
+      onValue(sessionRef, snap => {
+        const d = snap.val() || {};
+        if (myRole) return; // 이미 선택했으면 무시
+        updateRoleBtns(d);
       });
     }
 
-    window.joinRoom = async function() {
-      const code = document.getElementById('ri').value.trim().toUpperCase();
-      if (code.length < 2) { alert('방 코드를 입력해주세요!'); return; }
-      show('s-load');
-      await enterRoom(code);
+    function updateRoleBtns(data) {
+      const p1taken = data.player1 === true;
+      const p2taken = data.player2 === true;
+      const btn1 = document.getElementById('btn-p1');
+      const btn2 = document.getElementById('btn-p2');
+      const s1 = document.getElementById('p1-status');
+      const s2 = document.getElementById('p2-status');
+      const i1 = document.getElementById('p1-icon');
+      const i2 = document.getElementById('p2-icon');
+
+      if (p1taken) {
+        btn1.classList.add('taken'); btn1.disabled = true;
+        s1.textContent = '선택됨'; i1.textContent = '✅';
+      } else {
+        btn1.classList.remove('taken'); btn1.disabled = false;
+        s1.textContent = '선택 가능'; i1.textContent = '👆';
+      }
+      if (p2taken) {
+        btn2.classList.add('taken'); btn2.disabled = true;
+        s2.textContent = '선택됨'; i2.textContent = '✅';
+      } else {
+        btn2.classList.remove('taken'); btn2.disabled = false;
+        s2.textContent = '선택 가능'; i2.textContent = '✌️';
+      }
+    }
+
+    // ── 역할 선택 ──
+    window.selectRole = async function(role) {
+      const snap = await get(sessionRef);
+      const data = snap.val() || {};
+
+      if (role === 'p1' && data.player1) { alert('이미 선택된 자리예요!'); return; }
+      if (role === 'p2' && data.player2) { alert('이미 선택된 자리예요!'); return; }
+
+      myRole = role;
+
+      // Firebase에 자리 표시
+      const myRef = role === 'p1' ? p1Ref : p2Ref;
+      await set(myRef, true);
+
+      // 브라우저 종료 시 자리 자동 반납
+      onDisconnect(myRef).remove();
+      // 레디 상태도 정리
+      const myReadyRef = ref(db, 'session/ready_' + role);
+      onDisconnect(myReadyRef).remove();
+      // 결과도 정리
+      const myResultRef = ref(db, 'session/result_' + role);
+      onDisconnect(myResultRef).remove();
+
+      // Ready 화면으로
+      document.getElementById('play-role-badge').innerHTML =
+        `<span class="w-2.5 h-2.5 rounded-full bg-[#2ac1bc] animate-pulse"></span>${role === 'p1' ? '첫 번째 이름' : '두 번째 이름'}`;
+      show('s-ready');
+      listenReady();
     };
 
-    function startP1() {
-      if (p1t !== null) return; // 이미 플레이함
-      show('s-p1');
-      initHold('hb1','wf1','pf1','tm1', async t => {
-        p1t = t;
-        const r = judge(t); triggerSfx(r.sfx);
-        document.getElementById('re1').textContent = r.e;
-        document.getElementById('rt1').textContent = t.toFixed(3)+'초';
-        await update(rref, {p1t:t, state:'p2_turn'});
-        show('s-p1w');
+    // ── Ready 리스너 ──
+    function listenReady() {
+      onValue(sessionRef, snap => {
+        const d = snap.val() || {};
+        const r1 = d.ready_p1 === true;
+        const r2 = d.ready_p2 === true;
+
+        // UI 업데이트
+        const row1 = document.getElementById('ready-row-p1');
+        const row2 = document.getElementById('ready-row-p2');
+        document.getElementById('ready-p1-text').textContent = r1 ? '준비 완료 ✅' : '대기 중...';
+        document.getElementById('ready-p2-text').textContent = r2 ? '준비 완료 ✅' : '대기 중...';
+        document.getElementById('ready-p1-icon').textContent = r1 ? '✅' : '⏳';
+        document.getElementById('ready-p2-icon').textContent = r2 ? '✅' : '⏳';
+        if (r1) row1.classList.add('done'); else row1.classList.remove('done');
+        if (r2) row2.classList.add('done'); else row2.classList.remove('done');
+
+        // 내가 레디한 경우 버튼 비활성화
+        const myReady = myRole === 'p1' ? r1 : r2;
+        const btn = document.getElementById('ready-btn');
+        if (myReady) { btn.disabled = true; btn.textContent = '✅ 준비 완료!'; }
+
+        // 둘 다 레디면 게임 시작
+        if (r1 && r2 && !gameStarted) {
+          gameStarted = true;
+          setTimeout(() => startGame(), 800);
+        }
+
+        // 결과 화면에서 리셋 신호 감지
+        if (d.state === 'reset') {
+          finalShown = false; myResult = null; gameStarted = false;
+          show('s-ready');
+          // 레디 버튼 초기화
+          const btn = document.getElementById('ready-btn');
+          btn.disabled = false; btn.textContent = '✅ READY!';
+        }
       });
     }
 
-    function renderFinal(t1, t2) {
-      const d1=Math.abs(t1-TARGET), d2=Math.abs(t2-TARGET), tied=d1.toFixed(3)===d2.toFixed(3);
-      document.getElementById('ft1').textContent=t1.toFixed(3)+'s';
-      document.getElementById('ft2').textContent=t2.toFixed(3)+'s';
-      document.getElementById('fd1').textContent='오차: ±'+d1.toFixed(3)+'s';
-      document.getElementById('fd2').textContent='오차: ±'+d2.toFixed(3)+'s';
-      const c1=document.getElementById('fc1'),c2=document.getElementById('fc2');
-      const cr1=document.getElementById('crn1'),cr2=document.getElementById('crn2');
-      c1.className='rc col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between';
-      c2.className='rc col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between';
-      cr1.innerHTML=''; cr2.innerHTML='';
-      if (tied) {
-        document.getElementById('fw').textContent='🤝 기적적인 동률!';
-        document.getElementById('fs').textContent='소수점 3자리까지 똑같다니, 두 분 다 공동 낙점!';
-      } else if (d1<d2) {
-        c2.className+=' win'; cr2.innerHTML='<span class="bdg bf">🎙️ 첫 주자</span>'; cr1.innerHTML='<span class="bdg bs">🎉 SAFE</span>';
-        document.getElementById('fw').textContent='첫 마이크 주인공 낙점!';
-        document.getElementById('fs').textContent='오늘 세션의 첫 마이크는 Player 2가 가져갑니다! 🎙️';
-      } else {
-        c1.className+=' win'; cr1.innerHTML='<span class="bdg bf">🎙️ 첫 주자</span>'; cr2.innerHTML='<span class="bdg bs">🎉 SAFE</span>';
-        document.getElementById('fw').textContent='첫 마이크 주인공 낙점!';
-        document.getElementById('fs').textContent='오늘 세션의 첫 마이크는 Player 1이 가져갑니다! 🎙️';
-      }
-      playWin(); show('s-final');
+    // ── Ready 버튼 ──
+    window.setReady = async function() {
+      if (!myRole) return;
+      const myReadyRef = ref(db, 'session/ready_' + myRole);
+      await set(myReadyRef, true);
+      onDisconnect(myReadyRef).remove();
+    };
+
+    // ── 게임 시작 ──
+    function startGame() {
+      show('s-play');
+      initHold(async t => {
+        myResult = t;
+        const myResultRef = ref(db, 'session/result_' + myRole);
+        await set(myResultRef, t);
+
+        // 집계 화면
+        document.getElementById('my-record').textContent = t.toFixed(3) + '초';
+        show('s-wait-result');
+
+        // 상대방 결과 대기
+        const otherRole = myRole === 'p1' ? 'p2' : 'p1';
+        const otherRef = ref(db, 'session/result_' + otherRole);
+        onValue(otherRef, snap => {
+          if (snap.val() !== null && !finalShown) {
+            finalShown = true;
+            const r1 = myRole === 'p1' ? t : snap.val();
+            const r2 = myRole === 'p2' ? t : snap.val();
+            renderFinal(r1, r2);
+          }
+        });
+      });
     }
 
+    // ── 결과 렌더링 ──
+    function renderFinal(t1, t2) {
+      const d1 = Math.abs(t1 - TARGET), d2 = Math.abs(t2 - TARGET);
+      const tied = d1.toFixed(3) === d2.toFixed(3);
+
+      document.getElementById('ft1').textContent = t1.toFixed(3) + 's';
+      document.getElementById('ft2').textContent = t2.toFixed(3) + 's';
+      document.getElementById('fd1').textContent = '오차: ±' + d1.toFixed(3) + 's';
+      document.getElementById('fd2').textContent = '오차: ±' + d2.toFixed(3) + 's';
+
+      const c1 = document.getElementById('fc1'), c2 = document.getElementById('fc2');
+      const cr1 = document.getElementById('crn1'), cr2 = document.getElementById('crn2');
+      const banner = document.getElementById('lose-banner');
+      const victimName = document.getElementById('victim-name');
+
+      c1.className = 'rc col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between';
+      c2.className = 'rc col-span-2 rounded-2xl p-4 text-center flex flex-col justify-between';
+      cr1.innerHTML = ''; cr2.innerHTML = '';
+
+      if (tied) {
+        banner.style.background = 'linear-gradient(135deg,#2ac1bc,#158581)';
+        banner.style.border = '3px solid #2ac1bc';
+        banner.style.boxShadow = '0 0 40px rgba(42,193,188,.5)';
+        victimName.textContent = '둘 다!';
+        banner.querySelector('.text-xl').textContent = '🤝 동률!';
+        banner.querySelector('.text-sm').textContent = '소수점 3자리까지 똑같다니... 둘 다 첫 주자 😂';
+      } else if (d1 < d2) {
+        victimName.textContent = '두 번째 이름!';
+        c2.className += ' win';
+        cr2.innerHTML = '<span class="bdg bf">🎙️ FIRST VICTIM</span>';
+        cr1.innerHTML = '<span class="bdg bs">🎉 SAFE</span>';
+      } else {
+        victimName.textContent = '첫 번째 이름!';
+        c1.className += ' win';
+        cr1.innerHTML = '<span class="bdg bf">🎙️ FIRST VICTIM</span>';
+        cr2.innerHTML = '<span class="bdg bs">🎉 SAFE</span>';
+      }
+
+      playFanfare();
+      show('s-final');
+    }
+
+    // ── 다시 하기: 데이터 초기화 후 Ready 화면으로 ──
     window.doRestart = async function() {
       tap();
-      const base = (urlRoom || 'GAME').replace(/_[0-9]+$/, '');
-      const newRoom = base + '_' + Math.floor(1000 + Math.random()*9000);
-      if (rref) try { await update(rref, {state:'restart', nextRoom:newRoom}); } catch(e) {}
-      window.location.replace(window.location.pathname + '?room=' + newRoom);
+      finalShown = false; myResult = null; gameStarted = false;
+
+      // 결과 및 레디 초기화, 상태를 reset으로
+      await update(sessionRef, {
+        ready_p1: null,
+        ready_p2: null,
+        result_p1: null,
+        result_p2: null,
+        state: 'reset'
+      });
+
+      // 레디 버튼 초기화
+      const btn = document.getElementById('ready-btn');
+      btn.disabled = false; btn.textContent = '✅ READY!';
+      show('s-ready');
     };
 
-    function judge(t){const d=Math.abs(t-TARGET);if(d<=.05)return{e:'🎯',sfx:'win'};if(d<=.2)return{e:'✨',sfx:'win'};if(d<=.5)return{e:'👍',sfx:null};if(t<TARGET)return t<2?{e:'🔮',sfx:'mys'}:{e:'⚡',sfx:null};return t>4.2?{e:'☕',sfx:'pce'}:{e:'🧘',sfx:null};}
+    // ── 오디오 ──
     let _c=null,_to=null,_tg=null;
     function ac(){if(!_c)try{_c=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}if(_c&&_c.state==='suspended')_c.resume();return _c;}
     function tap(){const c=ac();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=580;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(.08,c.currentTime+.015);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.12);o.start(c.currentTime);o.stop(c.currentTime+.12);}
     function startT(){const c=ac();if(!c)return;try{_to=c.createOscillator();_tg=c.createGain();_to.connect(_tg);_tg.connect(c.destination);_to.type='triangle';_to.frequency.setValueAtTime(180,c.currentTime);_to.frequency.linearRampToValueAtTime(600,c.currentTime+3);_to.frequency.linearRampToValueAtTime(1000,c.currentTime+6);_tg.gain.setValueAtTime(0,c.currentTime);_tg.gain.linearRampToValueAtTime(.05,c.currentTime+.1);_to.start(c.currentTime);}catch(e){}}
     function stopT(){if(_to){try{_tg.gain.cancelScheduledValues(_c.currentTime);_tg.gain.setValueAtTime(_tg.gain.value,_c.currentTime);_tg.gain.exponentialRampToValueAtTime(.001,_c.currentTime+.05);_to.stop(_c.currentTime+.06);}catch(e){}_to=null;_tg=null;}}
-    function triggerSfx(s){if(s==='win')playWin();if(s==='mys')playMys();if(s==='pce')playPce();}
-    function playWin(){const c=ac();if(!c)return;[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const t=c.currentTime+i*.08;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.1,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.4);o.start(t);o.stop(t+.4);});}
-    function playMys(){const c=ac();if(!c)return;[261.6,311.1,370,466.2,554.4,622.3,740].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const t=c.currentTime+i*.11;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.05);g.gain.exponentialRampToValueAtTime(.001,t+.45);o.start(t);o.stop(t+.45);});}
-    function playPce(){const c=ac();if(!c)return;[261.6,329.6,392,523.3].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const d=i*.15;g.gain.setValueAtTime(0,c.currentTime+d);g.gain.linearRampToValueAtTime(.1,c.currentTime+d+.2);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d+2);o.start(c.currentTime+d);o.stop(c.currentTime+d+2);});}
+    function playFanfare(){const c=ac();if(!c)return;const notes=[{f:523.25,t:0,d:.15},{f:523.25,t:.16,d:.15},{f:523.25,t:.32,d:.15},{f:659.25,t:.48,d:.4},{f:622.25,t:.48,d:.4},{f:587.33,t:.9,d:.15},{f:523.25,t:1.06,d:.4},{f:659.25,t:1.06,d:.4},{f:783.99,t:1.5,d:.8}];notes.forEach(({f,t,d})=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='square';o.frequency.value=f;const st=c.currentTime+t;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(.12,st+.02);g.gain.setValueAtTime(.12,st+d-.03);g.gain.linearRampToValueAtTime(0,st+d);o.start(st);o.stop(st+d+.05);});[0,.16,.32,.48].forEach(t=>{const buf=c.createBuffer(1,c.sampleRate*.1,c.sampleRate),data=buf.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*Math.exp(-i/(c.sampleRate*.03));const src=c.createBufferSource(),g=c.createGain();src.buffer=buf;src.connect(g);g.connect(c.destination);g.gain.value=.3;src.start(c.currentTime+t);});}
 
-    function initHold(bid,wid,pid,tid,done){
-      const btn=document.getElementById(bid),wf=document.getElementById(wid),pf=document.getElementById(pid),tm=document.getElementById(tid);
+    // ── 버튼 홀드 엔진 ──
+    function initHold(done) {
+      const btn=document.getElementById('hb'),wf=document.getElementById('wf'),pf=document.getElementById('pf'),tm=document.getElementById('tm');
       btn.classList.remove('on');wf.classList.remove('play');pf.style.width='0%';tm.textContent='0.000';tm.className='text-6xl font-black text-slate-600 select-none text-center';
       const bars=wf.querySelectorAll('.sb');
       let t0=null,raf=null,fin=false;
@@ -350,12 +489,8 @@
 
     document.addEventListener('contextmenu',e=>e.preventDefault());
 
-    if (urlRoom) {
-      show('s-load');
-      setTimeout(()=>enterRoom(urlRoom.toUpperCase()), 400);
-    } else {
-      show('s-lobby');
-    }
+    // 시작
+    init();
   </script>
 </body>
 </html>
