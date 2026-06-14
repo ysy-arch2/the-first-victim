@@ -202,8 +202,10 @@
 
     const TARGET = 3, MAX = 6;
     const sRef = ref(db, 'session');
+    const FINISHED_TIMEOUT = 10 * 60 * 1000; // 10분
     let myRole = null;
     let played = false;
+    let finishedTimer = null;
 
     // ── 화면 전환 ──
     function show(id) {
@@ -212,28 +214,52 @@
       if (e) e.classList.add('on');
     }
 
+    // ── 세션 초기화 ──
+    async function resetSession() {
+      await update(sRef, {
+        player1: null, player2: null,
+        ready_p1: null, ready_p2: null,
+        result_p1: null, result_p2: null,
+        state: 'waiting',
+        finishedAt: null
+      });
+    }
+
     // ── 초기화 ──
     async function init() {
       const snap = await get(sRef);
       const d = snap.val() || {};
-      const p1 = !!d.player1;
-      const p2 = !!d.player2;
+      const state = d.state || 'waiting';
 
-      if (p1 && p2) {
+      // waiting 상태가 아니면 입장 불가
+      if (state !== 'waiting') {
+        // 두 플레이어 모두 없으면 초기화 후 재시도
+        if (!d.player1 && !d.player2) {
+          await resetSession();
+        } else {
+          show('s-full');
+          // 세션이 waiting으로 바뀌면 자동 새로고침
+          onValue(sRef, s => {
+            const v = s.val() || {};
+            if (!v.state || v.state === 'waiting') location.reload();
+          });
+          return;
+        }
+      }
+
+      // 두 자리 다 찼으면 입장 불가
+      if (d.player1 && d.player2) {
         show('s-full');
-        // 빈 자리 생기면 자동 새로고침
         onValue(sRef, s => {
           const v = s.val() || {};
-          if (!v.player1 || !v.player2) location.reload();
+          if (!v.state || v.state === 'waiting') location.reload();
         });
         return;
       }
 
-      // 역할 버튼 상태 반영
       updateRoleBtns(d);
       show('s-role');
 
-      // 역할 선택 화면 실시간 업데이트
       onValue(sRef, s => {
         if (myRole) return;
         updateRoleBtns(s.val() || {});
@@ -261,11 +287,24 @@
       const myPlayerRef = ref(db, 'session/player' + (role === 'p1' ? '1' : '2'));
       const myReadyRef = ref(db, 'session/ready_' + role);
       const myResultRef = ref(db, 'session/result_' + role);
+      const otherPlayerRef = ref(db, 'session/player' + (role === 'p1' ? '2' : '1'));
 
       await set(myPlayerRef, true);
+
+      // 내가 나갈 때 내 슬롯 제거
       onDisconnect(myPlayerRef).remove();
       onDisconnect(myReadyRef).remove();
       onDisconnect(myResultRef).remove();
+
+      // 내가 나갈 때 상대방도 없으면 세션 전체 초기화
+      // (onDisconnect는 단순 값 설정만 가능하므로 클라이언트에서 감지)
+      onValue(sRef, async s => {
+        const v = s.val() || {};
+        // 내가 나간 후 둘 다 없으면 세션 초기화 — 이건 남아있는 쪽에서 처리
+        if (myRole && !v.player1 && !v.player2 && v.state && v.state !== 'waiting') {
+          await resetSession();
+        }
+      });
 
       document.getElementById('play-role-badge').innerHTML =
         `<span class="w-2.5 h-2.5 rounded-full bg-[#2ac1bc] animate-pulse"></span>${role === 'p1' ? '첫 번째 이름' : '두 번째 이름'}`;
@@ -292,14 +331,15 @@
           btn.disabled = true; btn.textContent = '✅ 준비 완료!';
         }
 
-        // 둘 다 레디 → 게임 시작 (화면 조건 제거)
+        // 둘 다 레디 → 게임 시작
         if (r1 && r2 && !played) {
           played = true;
+          update(sRef, {state: 'playing'}).catch(()=>{});
           show('s-play');
           startPlay();
         }
 
-        // 결과 감지 — played 여부와 무관하게 둘 다 있으면 무조건 결과 표시
+        // 결과 감지 — 둘 다 있으면 결과 표시
         const res1 = d.result_p1;
         const res2 = d.result_p2;
         if (res1 != null && res2 != null) {
@@ -372,6 +412,13 @@
       if (finalScreen.classList.contains('on')) return;
       playFanfare();
       show('s-final');
+      // state를 finished로 변경 + 10분 자동 초기화 타이머
+      update(sRef, {state: 'finished', finishedAt: Date.now()}).catch(()=>{});
+      if (finishedTimer) clearTimeout(finishedTimer);
+      finishedTimer = setTimeout(async () => {
+        await resetSession();
+        location.reload();
+      }, FINISHED_TIMEOUT);
     }
 
     // ── 다시 하기 ──
